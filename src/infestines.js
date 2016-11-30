@@ -24,6 +24,7 @@ export const curry4 = fn => function (x1, x2, x3, x4) {
 
 export function curryN(n, fn) {
   switch (n) {
+    case 0: return () => fn()
     case 1: return x1 => fn(x1)
     case 2: return curry2(fn)
     case 3: return curry3(fn)
@@ -51,6 +52,8 @@ export const pipe4 = (fn1, fn2, fn3, fn4) =>
 
 export function pipe() {
   switch (arguments.length) {
+    case 0: return id
+    case 1: return arguments[0]
     case 2: return pipe2.apply(this, arguments)
     case 3: return pipe3.apply(this, arguments)
     case 4: return pipe4.apply(this, arguments)
