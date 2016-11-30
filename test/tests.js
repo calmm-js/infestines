@@ -16,16 +16,38 @@ const testEq = (expr, expect) => it(`${expr} => ${show(expect)}`, () => {
     throw new Error(`Expected: ${show(expect)}, actual: ${show(actual)}`)
 })
 
+const expectFail = expr => it(`${expr} => failure`, () => {
+  try {
+    const actual = eval(expr)
+    throw new Error(`Expected: failure, actual: ${show(actual)}`)
+  } catch (_e) {
+    return
+  }
+})
+
 describe("currying", () => {
-  testEq('I.curry2((x,y) => x+y)(1)(2)', 3)
-  testEq('I.curry3((x,y,z) => x+y+z)(1)(2,3)', 6)
-  testEq('I.curry4((a, b, c, d) => a+b+c+d).length', 4)
-  testEq('I.curry4((a, b, c, d) => a+b+c+d)(1).length', 3)
-  testEq('I.curry4((a, b, c, d) => a+b+c+d)(1,2).length', 2)
-  testEq('I.curry4((a, b, c, d) => a+b+c+d)(1)(2, 3).length', 1)
-  testEq('I.curry4((a, b, c, d) => a+b+c+d)(1,2,3,4)', 10)
-  testEq('I.curry4((a, b, c, d) => a+b+c+d)(1,2,3)(4)', 10)
-  testEq('I.curry4((a, b, c, d) => a+b+c+d)(1)(2,3,4)', 10)
+  testEq('I.curry(x => x+1)(1)', 2)
+  testEq('I.curry((x,y) => x+y)(1)(2)', 3)
+  testEq('I.curry((x,y,z) => x+y+z)(1)(2,3)', 6)
+  testEq('I.curry((a, b, c, d) => a+b+c+d).length', 4)
+  testEq('I.curry((a, b, c, d) => a+b+c+d)(1).length', 3)
+  testEq('I.curry((a, b, c, d) => a+b+c+d)(1,2).length', 2)
+  testEq('I.curry((a, b, c, d) => a+b+c+d)(1)(2, 3).length', 1)
+  testEq('I.curry((a, b, c, d) => a+b+c+d)(1,2,3,4)', 10)
+  testEq('I.curry((a, b, c, d) => a+b+c+d)(1,2,3)(4)', 10)
+  testEq('I.curry((a, b, c, d) => a+b+c+d)(1)(2,3,4)', 10)
+  expectFail('I.curry(() => {})')
+  expectFail('I.curry((a,b,c,d,e) => {})')
+})
+
+describe("piping", () => {
+  testEq('I.pipe((a, b) => a + b, x => x + 1)(1,2)', 4)
+  testEq('I.pipe((a, b) => a + b, x => x + 1, x => x * 2)(1)(2)', 8)
+  testEq('I.pipe((a, b) => a + b, x => x + 1).length', 2)
+  testEq('I.pipe(x=>x+1,x=>x+1,x=>x+1,x=>x+1)(1)', 5)
+  expectFail('I.pipe()')
+  expectFail('I.pipe(_=>{})')
+  expectFail('I.pipe(_=>{},_=>{},_=>{},_=>{},_=>{})')
 })
 
 describe("seq", () => {
@@ -94,6 +116,21 @@ describe("zipObjPartialU", () => {
   testEq('I.zipObjPartialU([], [])', {})
   testEq('I.zipObjPartialU(["a", "b"], [1, 2])', {a: 1, b: 2})
   testEq('I.zipObjPartialU(["a", "b"], [undefined, 2])', {b: 2})
+})
+
+describe("assocPartialU", () => {
+  testEq('I.assocPartialU("x", 1, null)', {x: 1})
+  testEq('I.assocPartialU("x", 1, undefined)', {x: 1})
+  testEq('I.assocPartialU("x", 2, {x: 1})', {x: 2})
+  testEq('I.assocPartialU("x", 2, {z: 1})', {z: 1, x: 2})
+})
+
+describe("dissocPartialU", () => {
+  testEq('I.dissocPartialU("x", null)', undefined)
+  testEq('I.dissocPartialU("x", undefined)', undefined)
+  testEq('I.dissocPartialU("x", {})', undefined)
+  testEq('I.dissocPartialU("x", {x: 1})', undefined)
+  testEq('I.dissocPartialU("x", {x: 1, y: 2})', {y: 2})
 })
 
 describe("mapPartialU", () => {

@@ -22,6 +22,42 @@ export const curry4 = fn => function (x1, x2, x3, x4) {
   }
 }
 
+export function curryN(n, fn) {
+  switch (n) {
+    case 1: return x1 => fn(x1)
+    case 2: return curry2(fn)
+    case 3: return curry3(fn)
+    case 4: return curry4(fn)
+    default: throw new Error(`curryN(${n}, ...) unsupported`)
+  }
+}
+
+export const curry = fn => curryN(fn.length, fn)
+
+//
+
+export const id = x => x
+
+//
+
+export const pipe2 = (fn1, fn2) =>
+  curryN(fn1.length, (...xs) => fn2(fn1(...xs)))
+
+export const pipe3 = (fn1, fn2, fn3) =>
+  curryN(fn1.length, (...xs) => fn3(fn2(fn1(...xs))))
+
+export const pipe4 = (fn1, fn2, fn3, fn4) =>
+  curryN(fn1.length, (...xs) => fn4(fn3(fn2(fn1(...xs)))))
+
+export function pipe() {
+  switch (arguments.length) {
+    case 2: return pipe2.apply(this, arguments)
+    case 3: return pipe3.apply(this, arguments)
+    case 4: return pipe4.apply(this, arguments)
+    default: throw new Error(`pipe with ${arguments.length} fns unsupported`)
+  }
+}
+
 //
 
 export function seq(x, ...fns) {
@@ -126,6 +162,34 @@ export function zipObjPartialU(ks, vs) {
       o[ks[i]] = v
   }
   return o
+}
+
+export function assocPartialU(k, v, o) {
+  const r = {}
+  if (isObject(o))
+    for (const l in o)
+      if (l !== k)
+        r[l] = o[l]
+      else {
+        r[k] = v
+        k = undefined
+      }
+  if (k !== undefined)
+    r[k] = v
+  return r
+}
+
+export function dissocPartialU(k, o) {
+  let r
+  if (isObject(o))
+    for (const l in o)
+      if (l !== k) {
+        if (!r)
+          r = {}
+        r[l] = o[l]
+      } else
+        k = undefined
+  return r
 }
 
 //

@@ -4,7 +4,7 @@ const I = require("../lib/infestines")
 const R = require("ramda")
 
 const addU = (x, y) => x + y
-const add2 = I.curry2(addU)
+const addC = I.curry(addU)
 
 const d1 = {x:[1],z:{},y:{z:[1,2,{a:[3]}]}}
 const d2 = {x:[1],z:{},y:{z:[1,2,{a:[3]}]}}
@@ -17,6 +17,9 @@ const vs1000 = Array(1000).fill(1)
 const inc = x => x + 1
 
 const bs = [
+  'I.pipe(inc, inc)(1)',
+  'R.pipe(inc, inc)(1)',
+
   'I.whereEqU(d1, d2)',
   'R.whereEq(d1, d2)',
 
@@ -36,7 +39,7 @@ const bs = [
   'R.values(d1)',
 
   'addU(1, 2)',
-  'add2(1, 2)',
+  'addC(1, 2)',
   'R.add(1, 2)',
 
   'I.seq(0, inc)',
