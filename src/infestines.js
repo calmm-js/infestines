@@ -38,6 +38,13 @@ export const curry = fn => curryN(fn.length, fn)
 //
 
 export const id = x => x
+export const always = x => _ => x
+
+//
+
+export const isArray = x => x ? x.constructor === Array : false
+export const isDefined = x => x !== undefined
+export const isObject = x => x ? x.constructor === Object : false
 
 //
 
@@ -72,15 +79,10 @@ export function seq(x, ...fns) {
 
 export function seqPartial(x, ...fns) {
   let r = x
-  for (let i=0, n=fns.length; r !== undefined && i<n; ++i)
+  for (let i=0, n=fns.length; isDefined(r) && i<n; ++i)
     r = fns[i](r)
   return r
 }
-
-//
-
-export const isObject = x => x ? x.constructor === Object : false
-export const isArray = x => x ? x.constructor === Array : false
 
 //
 
@@ -92,7 +94,7 @@ export const identicalU = (a, b) =>
 export function whereEqU(t, o) {
   for (const k in t) {
     const bk = o[k]
-    if (bk === undefined && !(k in o) || !acyclicEqualsU(t[k], bk))
+    if (!isDefined(bk) && !(k in o) || !acyclicEqualsU(t[k], bk))
       return false
   }
   return true
@@ -161,7 +163,7 @@ export function zipObjPartialU(ks, vs) {
   const o = {}, n=Math.min(ks.length, vs.length)
   for (let i=0; i<n; ++i) {
     const v = vs[i]
-    if (v !== undefined)
+    if (isDefined(v))
       o[ks[i]] = v
   }
   return o
@@ -177,7 +179,7 @@ export function assocPartialU(k, v, o) {
         r[k] = v
         k = undefined
       }
-  if (k !== undefined)
+  if (isDefined(k))
     r[k] = v
   return r
 }
@@ -201,7 +203,7 @@ export function mapPartialU(x2y, xs) {
   const ys = [], n=xs.length
   for (let i=0; i<n; ++i) {
     const y = x2y(xs[i])
-    if (y !== undefined)
+    if (isDefined(y))
       ys.push(y)
   }
   return ys

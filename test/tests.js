@@ -136,3 +136,16 @@ describe("dissocPartialU", () => {
 describe("mapPartialU", () => {
   testEq('I.mapPartialU(x => x < 0 ? -x : undefined, [1,-2,3,-4])', [2, 4])
 })
+
+describe("isDefined", () => {
+  testEq('I.isDefined(undefined)', false)
+  testEq('I.isDefined(0/0)', true)
+  testEq('I.isDefined(null)', true)
+  testEq('I.isDefined("anything except undefined")', true)
+})
+
+describe("always", () => {
+  testEq('I.always.length', 1)
+  testEq('I.always(2).length', 1)
+  testEq('I.always(1)(0)', 1)
+})
