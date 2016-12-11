@@ -19,13 +19,17 @@ const inc2I = I.pipe(inc, inc)
 const inc2R = R.pipe(inc, inc)
 
 const bs = [
+  'I.isObject(d1)',
+  'I.isObject(vs)',
+  'I.isObject(null)',
+
   'I.isArray(vs)',
   'I.isArray(d1)',
   'I.isArray(null)',
 
-  'I.isObject(d1)',
-  'I.isObject(vs)',
-  'I.isObject(null)',
+  'Array.isArray(vs)',
+  'Array.isArray(d1)',
+  'Array.isArray(null)',
 
   'inc2I(1)',
   'inc2R(1)',
