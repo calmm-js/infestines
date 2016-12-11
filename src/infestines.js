@@ -42,9 +42,24 @@ export const always = x => _ => x
 
 //
 
-export const isArray = x => x ? x.constructor === Array : false
 export const isDefined = x => x !== undefined
-export const isObject = x => x ? x.constructor === Object : false
+
+//
+
+// The idea here is that any valid JSON object will be categorized correctly.
+// Cases where there is no explicit attempt to create Array/Object lookalikes
+// will also categorize correctly.
+
+export const isArray = x => x ? x.constructor === Array : false
+
+export function isObject(x) {
+  if (!x)
+    return false
+  const c = x.constructor
+  return c === Object ||
+    typeof c !== "function" &&
+    Object.getPrototypeOf(x).constructor === Object
+}
 
 //
 
