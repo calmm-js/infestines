@@ -1,0 +1,11 @@
+{
+  "name": "infestines",
+  "description": "A minimalistic library to support writing FP libraries",
+  "main": "dist/infestines.js",
+  "license": "MIT",
+  "keywords": [
+    "internal"
+  ],
+  "homepage": "https://github.com/polytypic/infestines",
+  "ignore": ["*", "!dist/*"]
+}
