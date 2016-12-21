@@ -40,15 +40,6 @@ const bs = [
   'I.whereEqU(d1, d2)',
   'R.whereEq(d1, d2)',
 
-  'I.mapPartialU(inc, vs)',
-  'R.map(inc, vs)',
-
-  'I.mapPartialU(inc, vs1000)',
-  'R.map(inc, vs1000)',
-
-  'I.zipObjPartialU(ks, vs)',
-  'R.zipObj(ks, vs)',
-
   'I.keys(d1)',
   'R.keys(d1)',
 

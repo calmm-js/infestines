@@ -11,14 +11,14 @@ function show(x) {
 }
 
 const testEq = (expr, expect) => it(`${expr} => ${show(expect)}`, () => {
-  const actual = eval(expr)
+  const actual = eval(`() => ${expr}`)()
   if (!I.acyclicEqualsU(actual, expect))
     throw new Error(`Expected: ${show(expect)}, actual: ${show(actual)}`)
 })
 
 const expectFail = expr => it(`${expr} => failure`, () => {
   try {
-    const actual = eval(expr)
+    const actual = eval(`() => ${expr}`)()
     throw new Error(`Expected: failure, actual: ${show(actual)}`)
   } catch (_e) {
     return
@@ -59,6 +59,14 @@ describe("seqPartial", () => {
   testEq('I.seqPartial(11)', 11)
   testEq('I.seqPartial(11, x => x+2)', 13)
   testEq('I.seqPartial(11, _ => undefined, x => x.wouldFail)', undefined)
+})
+
+describe("array0", () => {
+  testEq('I.array0', [])
+})
+
+describe("object0", () => {
+  testEq('I.object0', {})
 })
 
 describe("isObject", () => {
@@ -108,15 +116,9 @@ describe("values", () => {
   testEq('I.values({x: 1, y: 2})', [1, 2])
 })
 
-describe("unzipObj", () => {
-  testEq('I.unzipObj({})', [[], []])
-  testEq('I.unzipObj({x: 1, y: 2})', [["x", "y"], [1, 2]])
-})
-
-describe("zipObjPartialU", () => {
-  testEq('I.zipObjPartialU([], [])', {})
-  testEq('I.zipObjPartialU(["a", "b"], [1, 2])', {a: 1, b: 2})
-  testEq('I.zipObjPartialU(["a", "b"], [undefined, 2])', {b: 2})
+describe("unzipObjIntoU", () => {
+  testEq('{const ks=[],vs=[]; I.unzipObjIntoU({x:1,y:2}, ks, vs); return [ks, vs]}', [["x", "y"], [1, 2]])
+  testEq('{const kvs=[]; I.unzipObjIntoU({x:1,y:2}, kvs, kvs); return kvs}', ["x", 1, "y", 2])
 })
 
 describe("assocPartialU", () => {
@@ -134,10 +136,6 @@ describe("dissocPartialU", () => {
   testEq('I.dissocPartialU("x", {x: 1, y: 2})', {y: 2})
 })
 
-describe("mapPartialU", () => {
-  testEq('I.mapPartialU(x => x < 0 ? -x : undefined, [1,-2,3,-4])', [2, 4])
-})
-
 describe("isDefined", () => {
   testEq('I.isDefined(undefined)', false)
   testEq('I.isDefined(0/0)', true)
@@ -149,4 +147,22 @@ describe("always", () => {
   testEq('I.always.length', 1)
   testEq('I.always(2).length', 1)
   testEq('I.always(1)(0)', 1)
+})
+
+describe("applyU", () => {
+  testEq('I.applyU(x => x + 1, 2)', 3)
+})
+
+describe("sndU", () => {
+  testEq('I.sndU("a", "b")', "b")
+})
+
+describe("assert", () => {
+  if (process.env.NODE_ENV === "production") {
+    testEq('I.assert(1, x => x < 1, "Does not fail in production")', 1)
+    testEq('I.assert(-1, x => x < 1, "Does not fail")', -1)
+  } else {
+    expectFail('I.assert(1, x => x < 1, "Fails when not in production")')
+    testEq('I.assert(-1, x => x < 1, "Does not fail")', -1)
+  }
 })

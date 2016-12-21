@@ -39,6 +39,21 @@ export const curry = fn => curryN(fn.length, fn)
 
 export const id = x => x
 export const always = x => _ => x
+export const applyU = (x2y, x) => x2y(x)
+export const sndU = (_, y) => y
+
+//
+
+export const assert = process.env.NODE_ENV === "production" ? id : (x,p,m) => {
+  if (p(x))
+    return x
+  throw new Error(m)
+}
+
+//
+
+export const array0 = Object.freeze([])
+export const object0 = Object.freeze({})
 
 //
 
@@ -165,24 +180,10 @@ export function unzipObjIntoU(o, ks, vs) {
   }
 }
 
-export function keys(o) {const ks=[]; unzipObjIntoU(o, ks, null); return ks}
-export function values(o) {const vs=[]; unzipObjIntoU(o, null, vs); return vs}
+export function keys(o) {const ks=[]; unzipObjIntoU(o, ks, 0); return ks}
+export function values(o) {const vs=[]; unzipObjIntoU(o, 0, vs); return vs}
 
-export function unzipObj(o) {
-  const ks=[], vs=[]
-  unzipObjIntoU(o, ks, vs)
-  return [ks, vs]
-}
-
-export function zipObjPartialU(ks, vs) {
-  const o = {}, n=Math.min(ks.length, vs.length)
-  for (let i=0; i<n; ++i) {
-    const v = vs[i]
-    if (isDefined(v))
-      o[ks[i]] = v
-  }
-  return o
-}
+//
 
 export function assocPartialU(k, v, o) {
   const r = {}
@@ -210,16 +211,4 @@ export function dissocPartialU(k, o) {
       } else
         k = undefined
   return r
-}
-
-//
-
-export function mapPartialU(x2y, xs) {
-  const ys = [], n=xs.length
-  for (let i=0; i<n; ++i) {
-    const y = x2y(xs[i])
-    if (isDefined(y))
-      ys.push(y)
-  }
-  return ys
 }
