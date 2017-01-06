@@ -8,6 +8,7 @@
     "dist": "babel src --source-maps inline --out-dir lib",
     "lint": "eslint src test",
     "prepublish": "npm run lint && npm run test && npm run dist",
+    "report-coverage": "nyc report --reporter=lcov > coverage.lcov && codecov",
     "test": "nyc mocha"
   },
   "repository": {
@@ -46,6 +47,7 @@
     "babel-plugin-transform-es2015-unicode-regex": "^6.11.0",
     "babel-register": "^6.18.0",
     "benchmark": "^2.1.2",
+    "codecov": "^1.0.1",
     "eslint": "^3.12.2",
     "mocha": "^3.2.0",
     "nyc": "^10.0.0",
