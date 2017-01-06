@@ -2,7 +2,7 @@
 
 const I = require("../lib/infestines")
 const R = require("ramda")
-const {sprintf} = require("sprintf-js")
+const sprintf = require("sprintf-js").sprintf
 
 const addU = (x, y) => x + y
 const addN = I.curry(addU)
