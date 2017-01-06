@@ -1,27 +1,29 @@
-const aryFs = [
+const C = [
   [             f => f.length === 0 ? f : ( ) => f( )],
   Array(2).fill(f => f.length === 1 ? f :  x  => f(x))]
 
-const varyFs = [
+const vC = [
   [             f => f.length === 0 ? f : function ( ) {return f.apply(null, arguments)}],
   Array(2).fill(f => f.length === 1 ? f : function (_) {return f.apply(null, arguments)})]
 
-export const curryN = (n, f) => getAry(aryFs, n)[Math.min(n, f.length)](f)
-export const arityN = (n, f) => getAry(aryFs, n)[n](f)
+export const curryN = (n, f) => c(C, n)[Math.min(n, f.length)](f)
+export const arityN = (n, f) => c(C, n)[n](f)
 export const curry = f => arityN(f.length, f)
 
-export const vcurryN = (n, f) => getAry(varyFs, n)[Math.min(n, f.length)](f)
-export const varityN = (n, f) => getAry(varyFs, n)[n](f)
+export const vcurryN = (n, f) => c(vC, n)[Math.min(n, f.length)](f)
+export const varityN = (n, f) => c(vC, n)[n](f)
 export const vcurry = f => varityN(f.length, f)
 
 //
 
-function genAry(aryFs, n) {
+const e = e => eval(e)
+
+function g(C, n) {
   const range = (i0, i1) => Array(i1-i0).fill().map((_, i) => i+i0)
   const genParams = (i0, i1) => range(i0, i1).map(i => `x${i}`).join(",")
-  const v = aryFs === varyFs ? "v" : ""
-  for (let total = n; !aryFs[total]; --total) {
-    aryFs[total] = Array(total+1).fill()
+  const v = C === vC ? "v" : ""
+  for (let total = n; !C[total]; --total) {
+    C[total] = Array(total+1).fill()
     for (let stage=1; stage<=total; ++stage) {
       const remains = total - stage
       const last = v
@@ -34,7 +36,7 @@ function genAry(aryFs, n) {
              ? `Array.prototype.slice.call(arguments,${stage})`
              : "arguments"})`
         : ""
-      aryFs[total][stage] = eval(`(function ${v}ary${stage}of${total}(f){
+      C[total][stage] = e(`(function ${v}ary${stage}of${total}(f){
 return function ${v}curried${stage}of${total}(${genParams(0, total)}){
 switch(arguments.length){
 case 0:
@@ -47,7 +49,7 @@ ${range(1, total+1)
     if (n < stage)
       f = `function(${genParams(n, stage)}){return ${f}}`
     if (n < stage && (total-n !== 1 || stage-n !== 1))
-      f = `${v}aryFs[${total-n}][${stage-n}](${f})`
+      f = `${v}C[${total-n}][${stage-n}](${f})`
     if (stage <= n && 1 < remains)
       f = `${v}curryN(${remains},${f})`
     if (stage < n)
@@ -57,10 +59,10 @@ ${range(1, total+1)
 ${last}}}})`)
     }
   }
-  return aryFs[n]
+  return C[n]
 }
 
-const getAry = (aryFs, n) => aryFs[n] || genAry(aryFs, n)
+const c = (C, n) => C[n] || g(C, n)
 
 //
 
