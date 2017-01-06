@@ -9,6 +9,10 @@ const addN = I.curry(addU)
 const addV = I.vcurry(addU)
 const addR = R.curry(addU)
 
+const acyclicEquals = I.curry(I.acyclicEqualsU)
+const identical = I.curry(I.identicalU)
+const whereEq = I.curry(I.whereEqU)
+
 const d1 = {x:[1],z:{},y:{z:[1,2,{a:[3]}]}}
 const d2 = {x:[1],z:{},y:{z:[1,2,{a:[3]}]}}
 
@@ -66,6 +70,7 @@ R.forEach(bs => {
     `R.pipe(inc, inc)(1)`,
   ], [
     `I.whereEqU(d1, d2)`,
+    `whereEq(d1, d2)`,
     `R.whereEq(d1, d2)`,
   ], [
     `I.keys(d1)`,
@@ -81,9 +86,11 @@ R.forEach(bs => {
   ], [
     `I.identicalU(null, null)`,
     `R.identical(null, null)`,
+    `identical(null, null)`,
   ], [
     `I.acyclicEqualsU(d1, d2)`,
     `R.equals(d1, d2)`,
+    `acyclicEquals(d1, d2)`,
   ]
 ])
 
