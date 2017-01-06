@@ -4,7 +4,7 @@
   "description": "A minimalistic library to support writing FP libraries",
   "main": "lib/infestines.js",
   "scripts": {
-    "bench": "NODE_ENV=production node bench/bench.js",
+    "bench": "NODE_ENV=production node --expose-gc bench/bench.js",
     "dist": "babel src --source-maps inline --out-dir lib",
     "lint": "eslint src test",
     "prepublish": "npm run lint && npm run test && npm run dist",
@@ -46,11 +46,12 @@
     "babel-plugin-transform-es2015-template-literals": "^6.8.0",
     "babel-plugin-transform-es2015-unicode-regex": "^6.11.0",
     "babel-register": "^6.18.0",
-    "benchmark": "^2.1.2",
+    "benchmark": "^2.1.3",
     "codecov": "^1.0.1",
     "eslint": "^3.12.2",
     "mocha": "^3.2.0",
     "nyc": "^10.0.0",
-    "ramda": "^0.22.1"
+    "ramda": "^0.23.0",
+    "sprintf-js": "^1.0.3"
   }
 }
