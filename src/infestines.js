@@ -1,39 +1,66 @@
-export const curry2 = fn => function (x1, x2) {
-  switch (arguments.length) {
-    case 1:  return x2 => fn(x1, x2)
-    default: return       fn(x1, x2)
+const aryFs = [
+  [             f => f.length === 0 ? f : ( ) => f( )],
+  Array(2).fill(f => f.length === 1 ? f :  x  => f(x))]
+
+const varyFs = [
+  [             f => f.length === 0 ? f : function ( ) {return f.apply(null, arguments)}],
+  Array(2).fill(f => f.length === 1 ? f : function (_) {return f.apply(null, arguments)})]
+
+export const curryN = (n, f) => getAry(aryFs, n)[Math.min(n, f.length)](f)
+export const arityN = (n, f) => getAry(aryFs, n)[n](f)
+export const curry = f => arityN(f.length, f)
+
+export const vcurryN = (n, f) => getAry(varyFs, n)[Math.min(n, f.length)](f)
+export const varityN = (n, f) => getAry(varyFs, n)[n](f)
+export const vcurry = f => varityN(f.length, f)
+
+//
+
+function genAry(aryFs, n) {
+  const range = (i0, i1) => Array(i1-i0).fill().map((_, i) => i+i0)
+  const genParams = (i0, i1) => range(i0, i1).map(i => `x${i}`).join(",")
+  const v = aryFs === varyFs ? "v" : ""
+  for (let total = n; !aryFs[total]; --total) {
+    aryFs[total] = Array(total+1).fill()
+    for (let stage=1; stage<=total; ++stage) {
+      const remains = total - stage
+      const last = v
+        ? `default:return ${
+           remains
+           ? (f => 1 < remains ? `curryN(${remains},${f})` : f)(
+               `f(${genParams(0, stage)})`)
+           : "f"}.apply(null,${
+             remains
+             ? `Array.prototype.slice.call(arguments,${stage})`
+             : "arguments"})`
+        : ""
+      aryFs[total][stage] = eval(`(function ${v}ary${stage}of${total}(f){
+return function ${v}curried${stage}of${total}(${genParams(0, total)}){
+switch(arguments.length){
+case 0:
+${range(1, total+1)
+  .map(n => {
+    let f = `f(${genParams(0, stage)})`
+    if (v && n < stage && !remains)
+      f = `arguments.length===${stage-n}?${f}:f.apply(null,[${
+            genParams(0, n)}].concat(Array.prototype.slice.call(arguments)))`
+    if (n < stage)
+      f = `function(${genParams(n, stage)}){return ${f}}`
+    if (n < stage && (total-n !== 1 || stage-n !== 1))
+      f = `${v}aryFs[${total-n}][${stage-n}](${f})`
+    if (stage <= n && 1 < remains)
+      f = `${v}curryN(${remains},${f})`
+    if (stage < n)
+      f = `${f}(${genParams(stage, n)})`
+    return `${v || n<total ? `case ${n}` : "default"}:return ${f}`})
+  .join("\n")}
+${last}}}})`)
+    }
   }
+  return aryFs[n]
 }
 
-export const curry3 = fn => function (x1, x2, x3) {
-  switch (arguments.length) {
-    case 1:  return curry2((x2, x3) => fn(x1, x2, x3))
-    case 2:  return             x3  => fn(x1, x2, x3)
-    default: return                    fn(x1, x2, x3)
-  }
-}
-
-export const curry4 = fn => function (x1, x2, x3, x4) {
-  switch (arguments.length) {
-    case 1:  return curry3((x2, x3, x4) => fn(x1, x2, x3, x4))
-    case 2:  return curry2(    (x3, x4) => fn(x1, x2, x3, x4))
-    case 3:  return                 x4  => fn(x1, x2, x3, x4)
-    default: return                        fn(x1, x2, x3, x4)
-  }
-}
-
-export function curryN(n, fn) {
-  switch (n) {
-    case 0: return () => fn()
-    case 1: return x1 => fn(x1)
-    case 2: return curry2(fn)
-    case 3: return curry3(fn)
-    case 4: return curry4(fn)
-    default: throw new Error(`curryN(${n}, ...) unsupported`)
-  }
-}
-
-export const curry = fn => curryN(fn.length, fn)
+const getAry = (aryFs, n) => aryFs[n] || genAry(aryFs, n)
 
 //
 
@@ -79,13 +106,13 @@ export function isObject(x) {
 //
 
 export const pipe2 = (fn1, fn2) =>
-  curryN(fn1.length, (...xs) => fn2(fn1(...xs)))
+  arityN(fn1.length, (...xs) => fn2(fn1(...xs)))
 
 export const pipe3 = (fn1, fn2, fn3) =>
-  curryN(fn1.length, (...xs) => fn3(fn2(fn1(...xs))))
+  arityN(fn1.length, (...xs) => fn3(fn2(fn1(...xs))))
 
 export const pipe4 = (fn1, fn2, fn3, fn4) =>
-  curryN(fn1.length, (...xs) => fn4(fn3(fn2(fn1(...xs)))))
+  arityN(fn1.length, (...xs) => fn4(fn3(fn2(fn1(...xs)))))
 
 export function pipe() {
   switch (arguments.length) {

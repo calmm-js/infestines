@@ -1,4 +1,5 @@
 import * as I from "../src/infestines"
+import * as R from "ramda"
 
 function show(x) {
   switch (typeof x) {
@@ -25,19 +26,51 @@ const expectFail = expr => it(`${expr} => failure`, () => {
   }
 })
 
+function forAll(fn, x, n, cb) {
+  function rec(n, x) {
+    if (0 === n)
+      cb(x)
+    for (let i=0; i<n; ++i)
+      rec(i, fn(i, n, x))
+  }
+  rec(n, x)
+}
+
+function forAllFns(n, cb) {
+  const args = R.map(i => `x${i}`, R.range(0, n))
+  forAll((i, m, body) => `(${args.slice(i, m)}) => ${body}`, `[${args}]`, n, cb)
+}
+
+function forAllApplys(fn, n, cb) {
+  const vals = R.range(0, n)
+  forAll((i, m, lhs) => `${lhs}(${vals.slice(n-m, n-i)})`,
+         `(${fn})`,
+         n,
+         cb)
+}
+
 describe("currying", () => {
-  testEq('I.curry(x => x+1)(1)', 2)
-  testEq('I.curry((x,y) => x+y)(1)(2)', 3)
-  testEq('I.curry((x,y,z) => x+y+z)(1)(2,3)', 6)
-  testEq('I.curry((a, b, c, d) => a+b+c+d).length', 4)
-  testEq('I.curry((a, b, c, d) => a+b+c+d)(1).length', 3)
-  testEq('I.curry((a, b, c, d) => a+b+c+d)(1,2).length', 2)
-  testEq('I.curry((a, b, c, d) => a+b+c+d)(1)(2, 3).length', 1)
-  testEq('I.curry((a, b, c, d) => a+b+c+d)(1,2,3,4)', 10)
-  testEq('I.curry((a, b, c, d) => a+b+c+d)(1,2,3)(4)', 10)
-  testEq('I.curry((a, b, c, d) => a+b+c+d)(1)(2,3,4)', 10)
-  expectFail('I.curry(() => {})')
-  expectFail('I.curry((a,b,c,d,e) => {})')
+  ['v', ''].forEach(v => {
+    for (let n=2; n<=4; ++n) {
+      forAllFns(n, fn => forAllApplys(`I.${v}curryN(${n}, ${fn})`, n, expr => {
+        testEq(expr, R.range(0, n))
+      }))
+    }
+
+    testEq(`I.${v}curry(x => x+1)(1)`, 2)
+    testEq(`I.${v}curry((x,y) => x+y)(1)(2)`, 3)
+    testEq(`I.${v}curry((x,y,z) => x+y+z)(1)(2,3)`, 6)
+    testEq(`I.${v}curry((a, b, c, d) => a+b+c+d).length`, 4)
+    testEq(`I.${v}curry((a, b, c, d) => a+b+c+d)(1).length`, 3)
+    testEq(`I.${v}curry((a, b, c, d) => a+b+c+d)(1,2).length`, 2)
+    testEq(`I.${v}curry((a, b, c, d) => a+b+c+d)(1)(2, 3).length`, 1)
+    testEq(`I.${v}curry((a, b, c, d) => a+b+c+d)(1,2,3,4)`, 10)
+    testEq(`I.${v}curry((a, b, c, d) => a+b+c+d)(1,2,3)(4)`, 10)
+    testEq(`I.${v}curry((a, b, c, d) => a+b+c+d)(1)(2,3,4)`, 10)
+
+    expectFail(`I.${v}curry(() => {})`)
+    expectFail(`I.${v}curry((a,b,c,d,e) => {})`)
+  })
 })
 
 describe("piping", () => {

@@ -6,6 +6,7 @@ const sprintf = require("sprintf-js").sprintf
 
 const addU = (x, y) => x + y
 const addN = I.curry(addU)
+const addV = I.vcurry(addU)
 const addR = R.curry(addU)
 
 const d1 = {x:[1],z:{},y:{z:[1,2,{a:[3]}]}}
@@ -39,10 +40,12 @@ R.forEach(bs => {
     `R.add(1, 2)`,
     `addN(1, 2)`,
     `addR(1, 2)`,
+    `addV(1, 2)`,
   ], [
     `R.add(1)(2)`,
     `addN(1)(2)`,
     `addR(1)(2)`,
+    `addV(1)(2)`,
   ], [
     `I.isObject(d1)`,
     `I.isObject(null)`,
