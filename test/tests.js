@@ -73,14 +73,13 @@ describe("currying", () => {
   })
 })
 
-describe("piping", () => {
-  testEq('I.pipe((a, b) => a + b, x => x + 1)(1,2)', 4)
-  testEq('I.pipe((a, b) => a + b, x => x + 1, x => x * 2)(1)(2)', 8)
-  testEq('I.pipe((a, b) => a + b, x => x + 1).length', 2)
-  testEq('I.pipe(x=>x+1,x=>x+1,x=>x+1,x=>x+1)(1)', 5)
-  expectFail('I.pipe()')
-  expectFail('I.pipe(_=>{})')
-  expectFail('I.pipe(_=>{},_=>{},_=>{},_=>{},_=>{})')
+describe("pipe and compose", () => {
+  testEq('I.pipe2U(R.inc, R.negate)(1)', -2)
+  testEq('I.compose2U(R.inc, R.negate)(1)', 0)
+  testEq('I.pipe2U((a, b) => a + b, x => x + 1)(1,2)', 4)
+  testEq('I.pipe2U((a, b) => a + b, x => x + 1).length', 2)
+  testEq('I.compose2U(x => x + 1, (a, b) => a + b)(1,2)', 4)
+  testEq('I.compose2U(x => x + 1, (a, b) => a + b).length', 2)
 })
 
 describe("seq", () => {

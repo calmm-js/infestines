@@ -107,25 +107,14 @@ export function isObject(x) {
 
 //
 
-export const pipe2 = (fn1, fn2) =>
-  arityN(fn1.length, (...xs) => fn2(fn1(...xs)))
-
-export const pipe3 = (fn1, fn2, fn3) =>
-  arityN(fn1.length, (...xs) => fn3(fn2(fn1(...xs))))
-
-export const pipe4 = (fn1, fn2, fn3, fn4) =>
-  arityN(fn1.length, (...xs) => fn4(fn3(fn2(fn1(...xs)))))
-
-export function pipe() {
-  switch (arguments.length) {
-    case 0: return id
-    case 1: return arguments[0]
-    case 2: return pipe2.apply(this, arguments)
-    case 3: return pipe3.apply(this, arguments)
-    case 4: return pipe4.apply(this, arguments)
-    default: throw new Error(`pipe with ${arguments.length} fns unsupported`)
-  }
+export function pipe2U(fn1, fn2) {
+  const n = fn1.length
+  return n === 1
+    ? x => fn2(fn1(x))
+    : arityN(n, (...xs) => fn2(fn1(...xs)))
 }
+
+export const compose2U = (fn1, fn2) => pipe2U(fn2, fn1)
 
 //
 

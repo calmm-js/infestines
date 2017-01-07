@@ -22,7 +22,7 @@ const vs = [1, 2, 3]
 const vs1000 = Array(1000).fill(1)
 
 const inc = x => x + 1
-const inc2I = I.pipe(inc, inc)
+const inc2I = I.pipe2U(inc, inc)
 const inc2R = R.pipe(inc, inc)
 
 const Benchmark = require("benchmark")
@@ -66,7 +66,10 @@ R.forEach(bs => {
     `inc2I(1)`,
     `inc2R(1)`,
   ], [
-    `I.pipe(inc, inc)(1)`,
+    `(x => inc(inc(x)))(1)`,
+    `I.pipe2U(inc, inc)(1)`,
+    `I.compose2U(inc, inc)(1)`,
+    `R.compose(inc, inc)(1)`,
     `R.pipe(inc, inc)(1)`,
   ], [
     `I.whereEqU(d1, d2)`,
