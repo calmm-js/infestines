@@ -130,17 +130,15 @@ export function pipe() {
 //
 
 export function seq(x, ...fns) {
-  let r = x
   for (let i=0, n=fns.length; i<n; ++i)
-    r = fns[i](r)
-  return r
+    x = fns[i](x)
+  return x
 }
 
 export function seqPartial(x, ...fns) {
-  let r = x
-  for (let i=0, n=fns.length; isDefined(r) && i<n; ++i)
-    r = fns[i](r)
-  return r
+  for (let i=0, n=fns.length; isDefined(x) && i<n; ++i)
+    x = fns[i](x)
+  return x
 }
 
 //
