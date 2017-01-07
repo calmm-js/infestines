@@ -50,7 +50,7 @@ function forAllApplys(fn, n, cb) {
 }
 
 describe("currying", () => {
-  ['v', ''].forEach(v => {
+  [''].forEach(v => {
     for (let n=2; n<=4; ++n) {
       forAllFns(n, fn => forAllApplys(`I.${v}curryN(${n}, ${fn})`, n, expr => {
         testEq(expr, R.range(0, n))

@@ -1,68 +1,98 @@
-const C = [
-  [             f => f.length === 0 ? f : ( ) => f( )],
-  Array(2).fill(f => f.length === 1 ? f :  x  => f(x))]
-
-const vC = [
-  [             f => f.length === 0 ? f : function ( ) {return f.apply(null, arguments)}],
-  Array(2).fill(f => f.length === 1 ? f : function (_) {return f.apply(null, arguments)})]
-
-export const curryN = (n, f) => c(C, n)[Math.min(n, f.length)](f)
-export const arityN = (n, f) => c(C, n)[n](f)
-export const curry = f => arityN(f.length, f)
-
-export const vcurryN = (n, f) => c(vC, n)[Math.min(n, f.length)](f)
-export const varityN = (n, f) => c(vC, n)[n](f)
-export const vcurry = f => varityN(f.length, f)
-
-//
-
-const e = e => eval(e)
-
-function g(C, n) {
-  const range = (i0, i1) => Array(i1-i0).fill().map((_, i) => i+i0)
-  const genParams = (i0, i1) => range(i0, i1).map(i => `x${i}`).join(",")
-  const v = C === vC ? "v" : ""
-  for (let total = n; !C[total]; --total) {
-    C[total] = Array(total+1).fill()
-    for (let stage=1; stage<=total; ++stage) {
-      const remains = total - stage
-      const last = v
-        ? `default:return ${
-           remains
-           ? (f => 1 < remains ? `curryN(${remains},${f})` : f)(
-               `f(${genParams(0, stage)})`)
-           : "f"}.apply(null,${
-             remains
-             ? `Array.prototype.slice.call(arguments,${stage})`
-             : "arguments"})`
-        : ""
-      C[total][stage] = e(`(function ${v}ary${stage}of${total}(f){
-return function ${v}curried${stage}of${total}(${genParams(0, total)}){
-switch(arguments.length){
-case 0:
-${range(1, total+1)
-  .map(n => {
-    let f = `f(${genParams(0, stage)})`
-    if (v && n < stage && !remains)
-      f = `arguments.length===${stage-n}?${f}:f.apply(null,[${
-            genParams(0, n)}].concat(Array.prototype.slice.call(arguments)))`
-    if (n < stage)
-      f = `function(${genParams(n, stage)}){return ${f}}`
-    if (n < stage && (total-n !== 1 || stage-n !== 1))
-      f = `${v}C[${total-n}][${stage-n}](${f})`
-    if (stage <= n && 1 < remains)
-      f = `${v}curryN(${remains},${f})`
-    if (stage < n)
-      f = `${f}(${genParams(stage, n)})`
-    return `${v || n<total ? `case ${n}` : "default"}:return ${f}`})
-  .join("\n")}
-${last}}}})`)
-    }
+const ary1of2 = fn => function (x0, x1) {
+  switch (arguments.length) {
+    case 0:
+    case 1: return fn(x0)
+    default: return fn(x0)(x1)
   }
-  return C[n]
 }
 
-const c = (C, n) => C[n] || g(C, n)
+const ary2of2 = fn => function (x0, x1) {
+  switch (arguments.length) {
+    case 0:
+    case 1: return x1 => fn(x0, x1)
+    default: return fn(x0, x1)
+  }
+}
+
+const ary1of3 = fn => function (x0, x1, x2) {
+  switch (arguments.length) {
+    case 0:
+    case 1: return curryN(2, fn(x0))
+    case 2: return curryN(2, fn(x0))(x1)
+    default: return curryN(2, fn(x0))(x1, x2)
+  }
+}
+
+const ary2of3 = fn => function (x0, x1, x2) {
+  switch (arguments.length) {
+    case 0:
+    case 1: return ary1of2(x1 => fn(x0, x1))
+    case 2: return fn(x0, x1)
+    default: return fn(x0, x1)(x2)
+  }
+}
+
+const ary3of3 = fn => function (x0, x1, x2) {
+  switch (arguments.length) {
+    case 0:
+    case 1: return ary2of2((x1, x2) => fn(x0, x1, x2))
+    case 2: return x2 => fn(x0, x1, x2)
+    default: return fn(x0, x1, x2)
+  }
+}
+
+const ary1of4 = fn => function (x0, x1, x2, x3) {
+  switch (arguments.length) {
+    case 0:
+    case 1: return curryN(3, fn(x0))
+    case 2: return curryN(3, fn(x0))(x1)
+    case 3: return curryN(3, fn(x0))(x1, x2)
+    default: return curryN(3, fn(x0))(x1, x2, x3)
+  }
+}
+
+const ary2of4 = fn => function (x0, x1, x2, x3) {
+  switch (arguments.length) {
+    case 0:
+    case 1: return ary1of3(x1 => fn(x0, x1))
+    case 2: return curryN(2, fn(x0, x1))
+    case 3: return curryN(2, fn(x0, x1))(x2)
+    default: return curryN(2, fn(x0, x1))(x2, x3)
+  }
+}
+
+const ary3of4 = fn => function (x0, x1, x2, x3) {
+  switch (arguments.length) {
+    case 0:
+    case 1: return ary2of3((x1, x2) => fn(x0, x1, x2))
+    case 2: return ary1of2(x2 => fn(x0, x1, x2))
+    case 3: return fn(x0, x1, x2)
+    default: return fn(x0, x1, x2)(x3)
+  }
+}
+
+const ary4of4 = fn => function (x0, x1, x2, x3) {
+  switch (arguments.length) {
+    case 0:
+    case 1: return ary3of3((x1, x2, x3) => fn(x0, x1, x2, x3))
+    case 2: return ary2of2((x2, x3) => fn(x0, x1, x2, x3))
+    case 3: return x3 => fn(x0, x1, x2, x3)
+    default: return fn(x0, x1, x2, x3)
+  }
+}
+
+const ary0of0 = fn => fn.length === 0 ? fn : () => fn()
+const ary1of1 = fn => fn.length === 1 ? fn : x  => fn(x)
+
+const C = [[ary0of0],
+           [ary1of1, ary1of1],
+           [ void 0, ary1of2, ary2of2],
+           [ void 0, ary1of3, ary2of3, ary3of3],
+           [ void 0, ary1of4, ary2of4, ary3of4, ary4of4]]
+
+export const curryN = (n, f) => C[n][Math.min(n, f.length)](f)
+export const arityN = (n, f) => C[n][n](f)
+export const curry = f => arityN(f.length, f)
 
 //
 

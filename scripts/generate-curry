@@ -1,0 +1,58 @@
+#!/usr/bin/env node
+// -*- mode: rjsx -*-
+
+const range = (i0, i1) => Array(i1-i0).fill().map((_, i) => i+i0)
+const genParams = (i0, i1) => range(i0, i1).map(i => `x${i}`).join(", ")
+
+const closure = (needsFunction, x0, xN, body) => needsFunction
+  ? `function (${genParams(x0, xN)}) {return ${body}}`
+  : `${x0+1 === xN ? `x${x0}` : `(${genParams(x0, xN)})`} => ${body}`
+
+function genCurry(v, totalMax) {
+  for (let total = 2; total<=totalMax; ++total) {
+    for (let stage=1; stage<=total; ++stage) {
+      const remains = total - stage
+      const last = v
+        ? `\n    default: return ${
+           remains
+           ? (f => 1 < remains ? `curryN(${remains}, ${f})` : f)(
+               `fn(${genParams(0, stage)})`)
+           : "fn"}.apply(null, ${
+             remains
+             ? `Array.prototype.slice.call(arguments, ${stage})`
+             : "arguments"})`
+        : ""
+      console.log(
+`const ${v}ary${stage}of${total} = fn => function (${genParams(0, total)}) {
+  switch (arguments.length) {
+    case 0:
+    ${range(1, total+1)
+      .map(n => {
+        let f = `fn(${genParams(0, stage)})`
+        const needsFunction = v && n < stage && !remains
+        if (needsFunction)
+          f = `arguments.length === ${stage-n} ? ${f} : fn.apply(null, [${
+               genParams(0, n)}].concat(Array.prototype.slice.call(arguments)))`
+        if (n < stage)
+          f = closure(needsFunction, n, stage, f)
+        if (n < stage && (total-n !== 1 || stage-n !== 1))
+          f = `${v}ary${stage-n}of${total-n}(${f})`
+        if (stage <= n && 1 < remains)
+          f = `${v}curryN(${remains}, ${f})`
+        if (stage < n)
+          f = `${f}(${genParams(stage, n)})`
+        return `${v || n<total ? `case ${n}` : "default"}: return ${f}`})
+      .join("\n    ")}${last}
+  }
+}
+`)
+    }
+  }
+}
+
+const totalMax = Number(process.argv[2]) || 4
+const variadic = 3 < process.argv.length
+
+genCurry("", totalMax)
+if (variadic)
+  genCurry("v", totalMax)
