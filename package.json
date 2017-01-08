@@ -1,12 +1,13 @@
 {
   "name": "infestines",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A minimalistic library to support writing FP libraries",
   "main": "lib/infestines.js",
   "scripts": {
     "bench": "NODE_ENV=production node --expose-gc bench/bench.js",
-    "dist": "npm run dist:bowerify & npm run dist:commonjs & wait",
-    "dist:bowerify": "browserify src/infestines.js -t babelify --no-bundle-external -d -s I -o dist/infestines.js",
+    "dist": "npm run dist:bowerify & npm run dist:bowerify.min & npm run dist:commonjs & wait",
+    "dist:bowerify": "    NODE_ENV=dev        browserify src/infestines.js -t babelify --no-bundle-external -d -s I -g envify              -o dist/infestines.js",
+    "dist:bowerify.min": "NODE_ENV=production browserify src/infestines.js -t babelify --no-bundle-external    -s I -g envify -g uglifyify -o dist/infestines.min.js",
     "dist:commonjs": "babel src --source-maps inline --out-dir lib",
     "docs": "./scripts/generate-docs",
     "docs-bundle": "NODE_ENV=dev browserify -r ./lib/infestines:infestines -r ramda -r babel-polyfill -g envify -g uglifyify > docs/bundle.js",
