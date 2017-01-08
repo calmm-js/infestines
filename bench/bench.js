@@ -21,6 +21,7 @@ const vs = [1, 2, 3]
 const vs1000 = Array(1000).fill(1)
 
 const inc = x => x + 1
+const inc2 = x => inc(inc(x))
 const inc2I = I.pipe2U(inc, inc)
 const inc2R = R.pipe(inc, inc)
 
@@ -60,6 +61,7 @@ R.forEach(bs => {
     `Array.isArray(null)`,
     `Array.isArray(vs)`,
   ], [
+    `inc2(1)`,
     `inc2I(1)`,
     `inc2R(1)`,
   ], [
