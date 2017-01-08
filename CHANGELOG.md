@@ -13,6 +13,10 @@ staged.
 Added `arityN(n, fn)` to set the arity of a given function `fn` to `n` and also
 to curry the function.
 
+Removed `assert`.  It is better to explicitly compare against
+`process.env.NODE_ENV` in libraries, because this allows minifiers to eliminate
+the assertions.
+
 ## 0.2.0
 
 Removed

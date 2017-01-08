@@ -188,13 +188,3 @@ describe("applyU", () => {
 describe("sndU", () => {
   testEq('I.sndU("a", "b")', "b")
 })
-
-describe("assert", () => {
-  if (process.env.NODE_ENV === "production") {
-    testEq('I.assert(1, x => x < 1, "Does not fail in production")', 1)
-    testEq('I.assert(-1, x => x < 1, "Does not fail")', -1)
-  } else {
-    expectFail('I.assert(1, x => x < 1, "Fails when not in production")')
-    testEq('I.assert(-1, x => x < 1, "Does not fail")', -1)
-  }
-})

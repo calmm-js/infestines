@@ -103,14 +103,6 @@ export const sndU = (_, y) => y
 
 //
 
-export const assert = process.env.NODE_ENV === "production" ? id : (x,p,m) => {
-  if (p(x))
-    return x
-  throw new Error(m)
-}
-
-//
-
 export const array0 = Object.freeze([])
 export const object0 = Object.freeze({})
 
