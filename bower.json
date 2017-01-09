@@ -7,5 +7,5 @@
     "internal"
   ],
   "homepage": "https://github.com/polytypic/infestines",
-  "ignore": ["*", "!LICENSE.md", "!dist/*"]
+  "ignore": ["*", "!*.md", "!dist/*"]
 }
