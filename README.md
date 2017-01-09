@@ -6,7 +6,7 @@ to be used for application programming.** Primitives that are too specialized to
 be used as a basis for nearly optimal implementations of higher level operations
 are not provided.
 
-[![npm version](https://badge.fury.io/js/infestines.svg)](http://badge.fury.io/js/infestines) [![Build Status](https://travis-ci.org/polytypic/infestines.svg?branch=master)](https://travis-ci.org/polytypic/infestines) [![Code Coverage](https://img.shields.io/codecov/c/github/polytypic/infestines/master.svg)](https://codecov.io/github/polytypic/infestines?branch=master) [![](https://david-dm.org/polytypic/infestines.svg)](https://david-dm.org/polytypic/infestines) [![](https://david-dm.org/polytypic/infestines/dev-status.svg)](https://david-dm.org/polytypic/infestines?type=dev)
+[![npm version](https://badge.fury.io/js/infestines.svg)](http://badge.fury.io/js/infestines) [![Bower version](https://badge.fury.io/bo/infestines.svg)](https://badge.fury.io/bo/infestines) [![Build Status](https://travis-ci.org/polytypic/infestines.svg?branch=master)](https://travis-ci.org/polytypic/infestines) [![Code Coverage](https://img.shields.io/codecov/c/github/polytypic/infestines/master.svg)](https://codecov.io/github/polytypic/infestines?branch=master) [![](https://david-dm.org/polytypic/infestines.svg)](https://david-dm.org/polytypic/infestines) [![](https://david-dm.org/polytypic/infestines/dev-status.svg)](https://david-dm.org/polytypic/infestines?type=dev)
 
 You can [try Infestines](https://polytypic.github.io/infestines/) in your
 browser:
