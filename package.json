@@ -10,7 +10,7 @@
     "dist:bowerify.min": "NODE_ENV=production browserify src/infestines.js -t babelify --no-bundle-external    -s I -g envify -g uglifyify | uglifyjs -m -c > dist/infestines.min.js",
     "dist:commonjs": "babel src --source-maps inline --out-dir lib",
     "docs": "./scripts/generate-docs",
-    "docs-bundle": "NODE_ENV=dev browserify -r ./lib/infestines:infestines -r ramda -r babel-polyfill -g envify -g uglifyify > docs/bundle.js",
+    "docs-bundle": "NODE_ENV=dev browserify -r ./lib/infestines:infestines -r ramda -r babel-polyfill -g envify -g uglifyify | uglifyjs -m -c > docs/bundle.js",
     "lint": "eslint src test",
     "prepublish": "npm run lint && npm run test && npm run dist",
     "report-coverage": "nyc report --reporter=lcov > coverage.lcov && codecov",
