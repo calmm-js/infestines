@@ -188,3 +188,22 @@ describe("applyU", () => {
 describe("sndU", () => {
   testEq('I.sndU("a", "b")', "b")
 })
+
+describe("inherit", () => {
+  testEq(`{
+        function Base(foo) {
+          this._foo = foo
+        }
+        I.inherit(Base, Object, {
+          Foo() {return this.Bar() + this._foo}
+        })
+        function Derived(foo) {
+          Base.call(this, foo)
+        }
+        I.inherit(Derived, Base, {
+          Bar() {return 10}
+        })
+        return new Derived(5).Foo()
+      }`,
+         15)
+})
