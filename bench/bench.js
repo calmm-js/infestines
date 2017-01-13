@@ -18,6 +18,8 @@ const d2 = {x:[1],z:{},y:{z:[1,2,{a:[3]}]}}
 const ks = ["a", "b", "c"]
 const vs = [1, 2, 3]
 
+const xyz = {x:1, y:2, z:3}
+
 const vs1000 = Array(1000).fill(1)
 
 const inc = x => x + 1
@@ -39,6 +41,14 @@ R.forEach(bs => {
   s.run()
 }, [
   [
+    'I.dissocPartialU("x", xyz)',
+    'I.dissocPartialU("z", xyz)',
+    'I.dissocPartialU("_", xyz)',
+  ], [
+    'I.assocPartialU("x", -1, xyz)',
+    'I.assocPartialU("z", -1, xyz)',
+    'I.assocPartialU("_", -1, xyz)',
+  ], [
     `addU(1, 2)`,
   ], [
     `R.add(1, 2)`,
