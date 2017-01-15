@@ -86,6 +86,7 @@ R.forEach(bs => {
     `R.whereEq(d1, d2)`,
   ], [
     `I.keys(d1)`,
+    `Object.keys(d1)`,
     `R.keys(d1)`,
   ], [
     `I.values(d1)`,
