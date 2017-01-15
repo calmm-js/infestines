@@ -118,14 +118,14 @@ export const isDefined = x => x !== undefined
 
 export const isArray = x => x ? x.constructor === Array : false
 
-export function isObject(x) {
-  if (!x)
-    return false
+function hasObjectConstructor(x) {
   const c = x.constructor
   return c === Object ||
     typeof c !== "function" &&
     Object.getPrototypeOf(x).constructor === Object
 }
+
+export const isObject = x => x ? hasObjectConstructor(x) : false
 
 //
 
@@ -218,21 +218,49 @@ export function unzipObjIntoU(o, ks, vs) {
   }
 }
 
-export function keys(o) {const ks=[]; unzipObjIntoU(o, ks, 0); return ks}
-export function values(o) {const vs=[]; unzipObjIntoU(o, 0, vs); return vs}
+export function keys(o) {
+  if (o instanceof Object) {
+    if (hasObjectConstructor(o)) {
+      const ks=[]
+      unzipObjIntoU(o, ks, 0)
+      return ks
+    } else {
+      return Object.keys(o)
+    }
+  }
+}
+
+export function values(o) {
+  if (o instanceof Object) {
+    if (hasObjectConstructor(o)) {
+      const vs=[]
+      unzipObjIntoU(o, 0, vs)
+      return vs
+    } else {
+      const xs = Object.keys(o), n = xs.length
+      for (let i=0; i<n; ++i)
+        xs[i] = o[xs[i]]
+      return xs
+    }
+  }
+}
 
 //
 
 export function assocPartialU(k, v, o) {
   const r = {}
-  if (isObject(o))
-    for (const l in o)
-      if (l !== k)
+  if (o instanceof Object) {
+    if (!hasObjectConstructor(o))
+      o = Object.assign({}, o)
+    for (const l in o) {
+      if (l !== k) {
         r[l] = o[l]
-      else {
+      } else {
         r[k] = v
         k = undefined
       }
+    }
+  }
   if (isDefined(k))
     r[k] = v
   return r
@@ -240,14 +268,19 @@ export function assocPartialU(k, v, o) {
 
 export function dissocPartialU(k, o) {
   let r
-  if (isObject(o))
-    for (const l in o)
+  if (o instanceof Object) {
+    if (!hasObjectConstructor(o))
+      o = Object.assign({}, o)
+    for (const l in o) {
       if (l !== k) {
         if (!r)
           r = {}
         r[l] = o[l]
-      } else
+      } else {
         k = undefined
+      }
+    }
+  }
   return r
 }
 

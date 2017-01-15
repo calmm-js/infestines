@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.0
+
+Generalized `keys`, `values`, `assocPartialU` and `dissocPartialU` to allow
+objects with constructor other than `Object`.
+
 ## 0.3.0
 
 Removed `pipe`, `pipe2`, `pipe3`, `pipe4` and added just `pipe2U` and

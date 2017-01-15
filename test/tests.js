@@ -138,14 +138,25 @@ describe("acyclicEqualsU", () => {
   testEq('I.acyclicEqualsU(new Foo(2), new Foo(1))', false)
 })
 
+function XYZ(x,y,z) {
+  this.x = x
+  this.y = y
+  this.z = z
+}
+XYZ.prototype.sum = function () {
+  return this.x + this.y + this.z
+}
+
 describe("keys", () => {
   testEq('I.keys({})', [])
   testEq('I.keys({x: 1, y: 2})', ["x", "y"])
+  testEq('I.keys(new XYZ(3,1,4))', ["x", "y", "z"])
 })
 
 describe("values", () => {
   testEq('I.values({})', [])
   testEq('I.values({x: 1, y: 2})', [1, 2])
+  testEq('I.values(new XYZ(3,1,4))', [3, 1, 4])
 })
 
 describe("unzipObjIntoU", () => {
@@ -158,6 +169,7 @@ describe("assocPartialU", () => {
   testEq('I.assocPartialU("x", 1, undefined)', {x: 1})
   testEq('I.assocPartialU("x", 2, {x: 1})', {x: 2})
   testEq('I.assocPartialU("x", 2, {z: 1})', {z: 1, x: 2})
+  testEq('I.assocPartialU("x", -1, new XYZ(3,1,4))', {x: -1, y: 1, z: 4})
 })
 
 describe("dissocPartialU", () => {
@@ -166,6 +178,7 @@ describe("dissocPartialU", () => {
   testEq('I.dissocPartialU("x", {})', undefined)
   testEq('I.dissocPartialU("x", {x: 1})', undefined)
   testEq('I.dissocPartialU("x", {x: 1, y: 2})', {y: 2})
+  testEq('I.dissocPartialU("y", new XYZ(3,1,4))', {x: 3, z: 4})
 })
 
 describe("isDefined", () => {
