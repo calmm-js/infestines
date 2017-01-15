@@ -28,7 +28,7 @@ const inc2I = I.pipe2U(inc, inc)
 const inc2R = R.pipe(inc, inc)
 
 const Benchmark = require("benchmark")
-Benchmark.options.maxTime = Number(process.argv[2]) || 10
+Benchmark.options.maxTime = Number(process.argv[2]) || Benchmark.options.maxTime
 
 R.forEach(bs => {
   global.gc()
