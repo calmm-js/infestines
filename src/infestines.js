@@ -112,6 +112,10 @@ export const isDefined = x => x !== undefined
 
 //
 
+export const isFunction = x => typeof x === "function"
+export const isString = x => typeof x === "string"
+export const isNumber = x => typeof x === "number"
+
 // The idea here is that any valid JSON object will be categorized correctly.
 // Cases where there is no explicit attempt to create Array/Object lookalikes
 // will also categorize correctly.
@@ -121,7 +125,7 @@ export const isArray = x => x ? x.constructor === Array : false
 function hasObjectConstructor(x) {
   const c = x.constructor
   return c === Object ||
-    typeof c !== "function" &&
+    !isFunction(c) &&
     Object.getPrototypeOf(x).constructor === Object
 }
 
@@ -203,7 +207,7 @@ export function acyclicEqualsU(a, b) {
     case Array: return acyclicEqualsArray(a, b)
     case Object: return acyclicEqualsObject(a, b)
     default:
-      if (typeof a.equals === "function")
+      if (isFunction(a.equals))
         return a.equals(b)
       return false
   }

@@ -41,6 +41,10 @@ R.forEach(bs => {
   s.run()
 }, [
   [
+    'I.isFunction(inc)',
+    'I.isNumber(0)',
+    'I.isString("")',
+  ], [
     'I.dissocPartialU("x", xyz)',
     'I.dissocPartialU("z", xyz)',
     'I.dissocPartialU("_", xyz)',

@@ -114,6 +114,18 @@ describe("isArray", () => {
   testEq('I.isArray([])', true)
 })
 
+describe("isNumber", () => {
+  testEq('I.isNumber(null)', false)
+  testEq('I.isNumber({})', false)
+  testEq('I.isNumber(101)', true)
+})
+
+describe("isString", () => {
+  testEq('I.isString(null)', false)
+  testEq('I.isString({})', false)
+  testEq('I.isString("42")', true)
+})
+
 export class Foo {
   constructor(v) {this.v = v}
   equals(other) {return this.v === other.v}
