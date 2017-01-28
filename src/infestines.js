@@ -287,9 +287,7 @@ export function dissocPartialU(k, o) {
 //
 
 export function inherit(Derived, Base, fns) {
-  const F = function () {}
-  F.prototype = Base.prototype
-  const p = Derived.prototype = new F()
+  const p = Derived.prototype = Object.create(Base.prototype)
   p.constructor = Derived
   for (const k in fns)
     p[k] = fns[k]
