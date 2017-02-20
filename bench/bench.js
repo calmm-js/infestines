@@ -41,6 +41,11 @@ R.forEach(bs => {
   s.run()
 }, [
   [
+    'I.hasU("x", d1)',
+    'I.hasU("a", d1)',
+    '"x" in d1',
+    '"y" in d1',
+  ], [
     'I.isFunction(inc)',
     'I.isNumber(0)',
     'I.isString("")',
