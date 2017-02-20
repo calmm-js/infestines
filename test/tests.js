@@ -214,6 +214,13 @@ describe("sndU", () => {
   testEq('I.sndU("a", "b")', "b")
 })
 
+describe("hasU", () => {
+  testEq('I.hasU("constructor", {})', false)
+  testEq('I.hasU("length", [])', true)
+  testEq('I.hasU("x", {x: 0})', true)
+  testEq('I.hasU("y", {x: 0})', false)
+})
+
 describe("inherit", () => {
   testEq(`{
         function Base(foo) {

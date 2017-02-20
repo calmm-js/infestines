@@ -112,6 +112,10 @@ export const isDefined = x => x !== undefined
 
 //
 
+export const hasU = (p, x) => Object.prototype.hasOwnProperty.call(x, p)
+
+//
+
 export const isFunction = x => typeof x === "function"
 export const isString = x => typeof x === "string"
 export const isNumber = x => typeof x === "number"
