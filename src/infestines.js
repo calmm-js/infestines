@@ -210,10 +210,7 @@ export function acyclicEqualsU(a, b) {
   switch (c) {
     case Array: return acyclicEqualsArray(a, b)
     case Object: return acyclicEqualsObject(a, b)
-    default:
-      if (isFunction(a.equals))
-        return a.equals(b)
-      return false
+    default: return isFunction(a.equals) && a.equals(b)
   }
 }
 
