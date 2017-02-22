@@ -116,24 +116,22 @@ export const hasU = (p, x) => Object.prototype.hasOwnProperty.call(x, p)
 
 //
 
+export const constructorOf = x =>
+  x === undefined || x === null
+  ? x
+  : hasU("constructor", x)
+    ? Object.getPrototypeOf(x).constructor
+    : x.constructor
+
+//
+
 export const isFunction = x => typeof x === "function"
 export const isString = x => typeof x === "string"
 export const isNumber = x => typeof x === "number"
 
-// The idea here is that any valid JSON object will be categorized correctly.
-// Cases where there is no explicit attempt to create Array/Object lookalikes
-// will also categorize correctly.
+export const isArray = Array.isArray
 
-export const isArray = x => x ? x.constructor === Array : false
-
-function hasObjectConstructor(x) {
-  const c = x.constructor
-  return c === Object ||
-    !isFunction(c) &&
-    Object.getPrototypeOf(x).constructor === Object
-}
-
-export const isObject = x => x ? hasObjectConstructor(x) : false
+export const isObject = x => x ? Object === constructorOf(x) : false
 
 //
 
@@ -170,7 +168,7 @@ export const identicalU = (a, b) =>
 export function whereEqU(t, o) {
   for (const k in t) {
     const bk = o[k]
-    if (!isDefined(bk) && !(k in o) || !acyclicEqualsU(t[k], bk))
+    if (!isDefined(bk) && !hasU(k, o) || !acyclicEqualsU(t[k], bk))
       return false
   }
   return true
@@ -180,7 +178,7 @@ export function whereEqU(t, o) {
 
 export function hasKeysOfU(t, o) {
   for (const k in t)
-    if (!(k in o))
+    if (!hasU(k, o))
       return false
   return true
 }
@@ -204,8 +202,8 @@ export function acyclicEqualsU(a, b) {
     return true
   if (!a || !b)
     return false
-  const c = a.constructor
-  if (c !== b.constructor)
+  const c = constructorOf(a)
+  if (c !== constructorOf(b))
     return false
   switch (c) {
     case Array: return acyclicEqualsArray(a, b)
@@ -225,7 +223,7 @@ export function unzipObjIntoU(o, ks, vs) {
 
 export function keys(o) {
   if (o instanceof Object) {
-    if (hasObjectConstructor(o)) {
+    if (Object === constructorOf(o)) {
       const ks=[]
       unzipObjIntoU(o, ks, 0)
       return ks
@@ -237,7 +235,7 @@ export function keys(o) {
 
 export function values(o) {
   if (o instanceof Object) {
-    if (hasObjectConstructor(o)) {
+    if (Object === constructorOf(o)) {
       const vs=[]
       unzipObjIntoU(o, 0, vs)
       return vs
@@ -255,7 +253,7 @@ export function values(o) {
 export function assocPartialU(k, v, o) {
   const r = {}
   if (o instanceof Object) {
-    if (!hasObjectConstructor(o))
+    if (Object !== constructorOf(o))
       o = Object.assign({}, o)
     for (const l in o) {
       if (l !== k) {
@@ -274,7 +272,7 @@ export function assocPartialU(k, v, o) {
 export function dissocPartialU(k, o) {
   let r
   if (o instanceof Object) {
-    if (!hasObjectConstructor(o))
+    if (Object !== constructorOf(o))
       o = Object.assign({}, o)
     for (const l in o) {
       if (l !== k) {
