@@ -106,12 +106,14 @@ describe("isObject", () => {
   testEq('I.isObject({})', true)
   testEq('I.isObject([])', false)
   testEq('I.isObject({constructor: "haha"})', true)
+  testEq('I.isObject({constructor: Array})', true)
 })
 
 describe("isArray", () => {
   testEq('I.isArray(null)', false)
   testEq('I.isArray({})', false)
   testEq('I.isArray([])', true)
+  testEq('I.isArray({constructor: Array})', false)
 })
 
 describe("isNumber", () => {
