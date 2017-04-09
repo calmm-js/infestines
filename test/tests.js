@@ -73,6 +73,16 @@ describe("currying", () => {
   })
 })
 
+describe("arity", () => {
+  testEq(`I.arityN(0, x => 101)()`, 101)
+  testEq(`I.arityN(1, (x, y) => 42)()`, 42)
+})
+
+describe("id", () => {
+  testEq(`I.id.length`, 1)
+  testEq(`I.id("anything")`, "anything")
+})
+
 describe("pipe and compose", () => {
   testEq('I.pipe2U(R.inc, R.negate)(1)', -2)
   testEq('I.compose2U(R.inc, R.negate)(1)', 0)
