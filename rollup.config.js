@@ -1,14 +1,15 @@
-import babel from "rollup-plugin-babel"
-
-const main = "infestines"
+import babel   from "rollup-plugin-babel"
+import replace from "rollup-plugin-replace"
+import uglify  from "rollup-plugin-uglify"
 
 export default {
-  entry: `src/${main}.js`,
-  plugins: [ babel() ],
-  moduleName: "I",
-  targets: [
-    { dest: `dist/${main}.js`,     format: "umd" },
-    { dest: `dist/${main}.cjs.js`, format: "cjs" },
-    { dest: `dist/${main}.es.js`,  format: "es"  }
-  ]
+  plugins: [].concat(
+    process.env.NODE_ENV
+    ? [replace({"process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV)})]
+    : [],
+    [ babel() ],
+    process.env.NODE_ENV === "production"
+    ? [ uglify() ]
+    : [ ]
+  )
 }
