@@ -1,4 +1,4 @@
-import * as I from "../src/infestines"
+import * as I from "../dist/infestines.cjs"
 import * as R from "ramda"
 
 function show(x) {

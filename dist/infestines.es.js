@@ -1,9 +1,3 @@
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(factory((global.I = global.I || {})));
-}(this, (function (exports) { 'use strict';
-
 var ary1of2 = function ary1of2(fn) {
   return function (x0, x1) {
     switch (arguments.length) {
@@ -407,39 +401,4 @@ function inherit(Derived, Base, fns) {
   }
 }
 
-exports.curryN = curryN;
-exports.arityN = arityN;
-exports.curry = curry;
-exports.id = id;
-exports.always = always;
-exports.applyU = applyU;
-exports.sndU = sndU;
-exports.array0 = array0;
-exports.object0 = object0;
-exports.isDefined = isDefined;
-exports.hasU = hasU;
-exports.constructorOf = constructorOf;
-exports.isFunction = isFunction;
-exports.isString = isString;
-exports.isNumber = isNumber;
-exports.isArray = isArray;
-exports.isObject = isObject;
-exports.pipe2U = pipe2U;
-exports.compose2U = compose2U;
-exports.seq = seq;
-exports.seqPartial = seqPartial;
-exports.identicalU = identicalU;
-exports.whereEqU = whereEqU;
-exports.hasKeysOfU = hasKeysOfU;
-exports.acyclicEqualsObject = acyclicEqualsObject;
-exports.acyclicEqualsU = acyclicEqualsU;
-exports.unzipObjIntoU = unzipObjIntoU;
-exports.keys = keys;
-exports.values = values;
-exports.assocPartialU = assocPartialU;
-exports.dissocPartialU = dissocPartialU;
-exports.inherit = inherit;
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
+export { curryN, arityN, curry, id, always, applyU, sndU, array0, object0, isDefined, hasU, constructorOf, isFunction, isString, isNumber, isArray, isObject, pipe2U, compose2U, seq, seqPartial, identicalU, whereEqU, hasKeysOfU, acyclicEqualsObject, acyclicEqualsU, unzipObjIntoU, keys, values, assocPartialU, dissocPartialU, inherit };

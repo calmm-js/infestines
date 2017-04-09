@@ -1,8 +1,6 @@
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(factory((global.I = global.I || {})));
-}(this, (function (exports) { 'use strict';
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
 
 var ary1of2 = function ary1of2(fn) {
   return function (x0, x1) {
@@ -439,7 +437,3 @@ exports.values = values;
 exports.assocPartialU = assocPartialU;
 exports.dissocPartialU = dissocPartialU;
 exports.inherit = inherit;
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
