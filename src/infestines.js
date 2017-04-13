@@ -294,4 +294,5 @@ export function inherit(Derived, Base, fns) {
   p.constructor = Derived
   for (const k in fns)
     p[k] = fns[k]
+  return Derived
 }
