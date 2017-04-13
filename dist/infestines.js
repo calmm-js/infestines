@@ -404,7 +404,7 @@ function inherit(Derived, Base, fns) {
   p.constructor = Derived;
   for (var k in fns) {
     p[k] = fns[k];
-  }
+  }return Derived;
 }
 
 exports.curryN = curryN;

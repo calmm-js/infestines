@@ -398,7 +398,7 @@ function inherit(Derived, Base, fns) {
   p.constructor = Derived;
   for (var k in fns) {
     p[k] = fns[k];
-  }
+  }return Derived;
 }
 
 export { curryN, arityN, curry, id, always, applyU, sndU, array0, object0, isDefined, hasU, constructorOf, isFunction, isString, isNumber, isArray, isObject, pipe2U, compose2U, seq, seqPartial, identicalU, whereEqU, hasKeysOfU, acyclicEqualsObject, acyclicEqualsU, unzipObjIntoU, keys, values, assocPartialU, dissocPartialU, inherit };
