@@ -3,9 +3,9 @@ notifications:
   email: false
 before_install: npm install npm@latest -g
 node_js:
-  - "4"
   - "6"
   - "7"
+  - "4"
 script:
   - npm run report-coverage
   - npm run bench 0.125
