@@ -119,9 +119,7 @@ export const hasU = (p, x) => Object.prototype.hasOwnProperty.call(x, p)
 export const constructorOf = x =>
   x === undefined || x === null
   ? x
-  : hasU("constructor", x)
-    ? Object.getPrototypeOf(x).constructor
-    : x.constructor
+  : (hasU("constructor", x) ? Object.getPrototypeOf(x) : x).constructor
 
 //
 
