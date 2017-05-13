@@ -214,7 +214,7 @@ var hasU = function hasU(p, x) {
 //
 
 var constructorOf = function constructorOf(x) {
-  return x === undefined || x === null ? x : hasU("constructor", x) ? Object.getPrototypeOf(x).constructor : x.constructor;
+  return x === undefined || x === null ? x : (hasU("constructor", x) ? Object.getPrototypeOf(x) : x).constructor;
 };
 
 //
