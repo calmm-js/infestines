@@ -70,10 +70,12 @@ R.forEach(bs => {
   ], [
     `I.isObject(d1)`,
     `I.isObject(null)`,
+    `I.isObject(5)`,
     `I.isObject(vs)`,
   ], [
     `I.isArray(d1)`,
     `I.isArray(null)`,
+    `I.isArray(5)`,
     `I.isArray(vs)`,
   ], [
     `Array.isArray(d1)`,
@@ -107,6 +109,7 @@ R.forEach(bs => {
     `I.seq(0, inc, inc, inc, inc)`,
   ], [
     `I.identicalU(null, null)`,
+    `Object.is(null, null)`,
     `R.identical(null, null)`,
     `identical(null, null)`,
   ], [
