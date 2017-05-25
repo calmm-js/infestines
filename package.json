@@ -13,6 +13,7 @@
     "dist:umd.min": "NODE_ENV=production rollup -c -n I -i src/infestines.js -f umd -o dist/infestines.min.js",
     "docs": "./scripts/generate-docs",
     "docs-bundle": "NODE_ENV=dev browserify -r ./dist/infestines.cjs:infestines -r ramda -r babel-polyfill -g envify -g uglifyify | uglifyjs -m -c > docs/bundle.js",
+    "docs-watch": "watch-run -i -p README.md npm run docs",
     "lint": "eslint src test",
     "prepare": "npm run lint && npm run dist && npm run test",
     "report-coverage": "nyc report --reporter=lcov > coverage.lcov && codecov",
@@ -69,6 +70,7 @@
     "rollup-plugin-uglify": "^2.0.1",
     "sprintf-js": "^1.1.0",
     "uglify-js": "^3.0.11",
-    "uglifyify": "^3.0.4"
+    "uglifyify": "^3.0.4",
+    "watch-run": "^1.2.5"
   }
 }

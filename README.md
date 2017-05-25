@@ -22,3 +22,46 @@ I.curryN(2, x => {
 })(2, 3)
 // 7
 ```
+
+## Contents
+
+* Reference
+  * Currying
+    * [`I.arityN(n, (x1, ..., xm) => y) ~> x1 => ... => xn => y`](#I-arityN)
+    * [`I.curry((x1, ..., xn) => y) ~> x1 => ... => xn => y`](#I-curry)
+    * [`I.curryN(n, (x1, ..., xn) => y) ~> x1 => ... => xn => y`](#I-curryN)
+  * Function composition
+    * [`I.compose2U(b => c, (a1, ..., aN) => b) ~> a1 => ... aN => c`](#I-compose2U)
+    * [`I.pipe2U((a1, ..., an) => b, b => c) ~> a1 => ... aN => c`](#I-pipe2U)
+  * Sequencing
+    * [`I.seq(value, ...fns) ~> value`](#I-seq)
+    * [`I.seqPartial(maybeValue, ...fns) ~> maybeValue`](#I-seq)
+  * Basic combinators
+    * [`I.always(x) ~> _ => x`](#I-always)
+    * [`I.applyU(x => y, x) ~> y`](#I-applyU)
+    * [`I.id(x) ~> x`](#I-id)
+    * [`I.sndU(_, x) ~> x`](#I-sndU)
+  * Constants
+    * [`I.array0 ~> []`](#I-array0)
+    * [`I.object0 ~> {}`](#I-object0)
+  * Type predicates
+    * [`I.isArray(any) ~> boolean`](#I-isArray)
+    * [`I.isDefined(any) ~> boolean`](#I-isDefined)
+    * [`I.isFunction(any) ~> boolean`](#I-isFunction)
+    * [`I.isNumber(any) ~> boolean`](#I-isNumber)
+    * [`I.isObject(any) ~> boolean`](#I-isObject)
+    * [`I.isString(any) ~> boolean`](#I-isString)
+  * Equality
+    * [`I.acyclicEqualsU(any, any) ~> boolean`](#I-acyclicEqualsU)
+    * [`I.hasKeysOfU(template, object)`](#I-hasKeysOfU)
+    * [`I.identicalU(any, any) ~> boolean`](#I-identical)
+    * [`I.whereEqU(template, object)`](#I-whereEqU)
+  * Objects
+    * [`I.assocPartialU(key, value, object) ~> object`](#I-assocPartialU)
+    * [`I.constructorOf(any) ~> Function|null|undefined`](#I-constructorOf)
+    * [`I.dissocPartialU(key, object) ~> object|undefined`](#I-dissocPartialU)
+    * [`I.hasU(propName, object) ~> boolean`](#I-hasU)
+    * [`I.inherit(Derived, Base, Methods) ~> Derived`](#I-inherit)
+    * [`I.keys(object) ~> [...keys]`](#I-keys)
+    * [`I.unzipObjIntoU(object, keys, values)`](#I-unzipObjIntoU)
+    * [`I.values(object) ~> [...values]`](#I-values)

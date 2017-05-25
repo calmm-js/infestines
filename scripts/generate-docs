@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const title = "Try Infestines with KLIPSE"
+const title = "Infestines"
 const icon = ""
 const blob = "https://github.com/polytypic/infestines/blob/master/"
 const hljsStyle = "googlecode"
