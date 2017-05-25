@@ -60,15 +60,15 @@
     "envify": "^4.0.0",
     "eslint": "^3.19.0",
     "marked": "^0.3.6",
-    "mocha": "^3.3.0",
+    "mocha": "^3.4.2",
     "nyc": "^10.3.2",
     "ramda": "^0.23.0",
     "rollup": "^0.41.6",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-replace": "^1.1.1",
-    "rollup-plugin-uglify": "^1.0.2",
+    "rollup-plugin-uglify": "^2.0.1",
     "sprintf-js": "^1.1.0",
-    "uglify-js": "^3.0.4",
+    "uglify-js": "^3.0.11",
     "uglifyify": "^3.0.4"
   }
 }
