@@ -108,7 +108,7 @@ export const object0 = Object.freeze({})
 
 //
 
-export const isDefined = x => x !== undefined
+export const isDefined = x => void 0 !== x
 
 //
 
@@ -258,7 +258,7 @@ export function assocPartialU(k, v, o) {
         r[l] = o[l]
       } else {
         r[k] = v
-        k = undefined
+        k = void 0
       }
     }
   }
@@ -278,7 +278,7 @@ export function dissocPartialU(k, o) {
           r = {}
         r[l] = o[l]
       } else {
-        k = undefined
+        k = void 0
       }
     }
   }
