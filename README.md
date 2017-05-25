@@ -1,4 +1,4 @@
-[ [GitHub](https://github.com/polytypic/infestines) | [Try Infestines!](https://polytypic.github.io/infestines/)  ]
+# <a id="infestines"></a> Infestines &middot; [![GitHub stars](https://img.shields.io/github/stars/polytypic/infestines.svg?style=social)](https://github.com/polytypic/infestines) [![npm](https://img.shields.io/npm/dm/infestines.svg)](https://www.npmjs.com/package/infestines)
 
 This is a minimalistic library of basic utilities, such as currying, for writing
 more interesting high performance FP libraries.  **This library is not intended
