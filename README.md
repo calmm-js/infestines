@@ -92,7 +92,18 @@ I.curryN(2, x => {
 #### Constants
 
 ##### <a id="I-array0"></a> [≡](#contents) [▶](https://polytypic.github.io/infestines/#I-array0) [`I.array0 ~> []`](#I-array0)
+
+`I.array0` is an
+empty
+[frozen](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze) array
+`[]`.
+
 ##### <a id="I-object0"></a> [≡](#contents) [▶](https://polytypic.github.io/infestines/#I-object0) [`I.object0 ~> {}`](#I-object0)
+
+`I.object0` is an
+empty
+[frozen](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze) object
+`{}`.
 
 #### Type predicates
 
