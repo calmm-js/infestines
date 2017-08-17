@@ -37,7 +37,7 @@ const body = I.seq(
   R.replace(new RegExp(esc(site), "g"), ""),
   marked,
   R.replace(/<code class="lang-([a-z]*)">/g,
-            '<code class="hljs lang-$1\">'))
+            '<code class="hljs lang-$1">'))
 
 fs.writeFileSync("docs/index.html",
 `<!doctype html>
