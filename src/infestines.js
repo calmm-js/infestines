@@ -95,8 +95,10 @@ export const sndU = (_, y) => y
 
 //
 
-export const array0 = Object.freeze([])
-export const object0 = Object.freeze({})
+export const freeze = x => x && Object.freeze(x)
+
+export const array0 = /*#__PURE__*/freeze([])
+export const object0 = /*#__PURE__*/freeze({})
 
 //
 
