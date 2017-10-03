@@ -88,6 +88,12 @@ export const curry = f => arityN(f.length, f)
 
 //
 
+export const assign = Object.assign
+
+export const toObject = x => assign({}, x)
+
+//
+
 export const id = x => x
 export const always = x => _ => x
 export const applyU = (x2y, x) => x2y(x)
@@ -246,7 +252,7 @@ export function assocPartialU(k, v, o) {
   const r = {}
   if (o instanceof Object) {
     if (Object !== constructorOf(o))
-      o = Object.assign({}, o)
+      o = toObject(o)
     for (const l in o) {
       if (l !== k) {
         r[l] = o[l]
@@ -265,7 +271,7 @@ export function dissocPartialU(k, o) {
   let r
   if (o instanceof Object) {
     if (Object !== constructorOf(o))
-      o = Object.assign({}, o)
+      o = toObject(o)
     for (const l in o) {
       if (l !== k) {
         if (!r)
