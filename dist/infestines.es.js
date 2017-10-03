@@ -1,26 +1,14 @@
 var ary1of2 = function ary1of2(fn) {
   return function (x0, x1) {
-    switch (arguments.length) {
-      case 0:
-      case 1:
-        return fn(x0);
-      default:
-        return fn(x0)(x1);
-    }
+    return arguments.length < 2 ? fn(x0) : fn(x0)(x1);
   };
 };
 
 var ary2of2 = function ary2of2(fn) {
   return function (x0, x1) {
-    switch (arguments.length) {
-      case 0:
-      case 1:
-        return function (x1) {
-          return fn(x0, x1);
-        };
-      default:
-        return fn(x0, x1);
-    }
+    return arguments.length < 2 ? function (x1) {
+      return fn(x0, x1);
+    } : fn(x0, x1);
   };
 };
 
@@ -173,6 +161,14 @@ var curry = function curry(f) {
 
 //
 
+var assign = Object.assign;
+
+var toObject = function toObject(x) {
+  return assign({}, x);
+};
+
+//
+
 var id = function id(x) {
   return x;
 };
@@ -190,13 +186,17 @@ var sndU = function sndU(_, y) {
 
 //
 
-var array0 = Object.freeze([]);
-var object0 = Object.freeze({});
+var freeze = function freeze(x) {
+  return x && Object.freeze(x);
+};
+
+var array0 = /*#__PURE__*/freeze([]);
+var object0 = /*#__PURE__*/freeze({});
 
 //
 
 var isDefined = function isDefined(x) {
-  return x !== undefined;
+  return void 0 !== x;
 };
 
 //
@@ -361,13 +361,13 @@ function values(o) {
 function assocPartialU(k, v, o) {
   var r = {};
   if (o instanceof Object) {
-    if (Object !== constructorOf(o)) o = Object.assign({}, o);
+    if (Object !== constructorOf(o)) o = toObject(o);
     for (var l in o) {
       if (l !== k) {
         r[l] = o[l];
       } else {
         r[k] = v;
-        k = undefined;
+        k = void 0;
       }
     }
   }
@@ -378,13 +378,13 @@ function assocPartialU(k, v, o) {
 function dissocPartialU(k, o) {
   var r = void 0;
   if (o instanceof Object) {
-    if (Object !== constructorOf(o)) o = Object.assign({}, o);
+    if (Object !== constructorOf(o)) o = toObject(o);
     for (var l in o) {
       if (l !== k) {
         if (!r) r = {};
         r[l] = o[l];
       } else {
-        k = undefined;
+        k = void 0;
       }
     }
   }
@@ -393,12 +393,12 @@ function dissocPartialU(k, o) {
 
 //
 
-function inherit(Derived, Base, fns) {
-  var p = Derived.prototype = Object.create(Base.prototype);
-  p.constructor = Derived;
-  for (var k in fns) {
-    p[k] = fns[k];
-  }return Derived;
+function inherit(Derived, Base, protos, statics) {
+  var proto = Derived.prototype = Object.create(Base.prototype);
+  proto.constructor = Derived;
+  assign(proto, protos);
+  assign(Derived, statics);
+  return Derived;
 }
 
-export { curryN, arityN, curry, id, always, applyU, sndU, array0, object0, isDefined, hasU, constructorOf, isFunction, isString, isNumber, isArray, isObject, pipe2U, compose2U, seq, seqPartial, identicalU, whereEqU, hasKeysOfU, acyclicEqualsObject, acyclicEqualsU, unzipObjIntoU, keys, values, assocPartialU, dissocPartialU, inherit };
+export { curryN, arityN, curry, assign, toObject, id, always, applyU, sndU, freeze, array0, object0, isDefined, hasU, constructorOf, isFunction, isString, isNumber, isArray, isObject, pipe2U, compose2U, seq, seqPartial, identicalU, whereEqU, hasKeysOfU, acyclicEqualsObject, acyclicEqualsU, unzipObjIntoU, keys, values, assocPartialU, dissocPartialU, inherit };
