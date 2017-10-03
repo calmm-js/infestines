@@ -1,17 +1,9 @@
 const ary1of2 = fn => function (x0, x1) {
-  switch (arguments.length) {
-    case 0:
-    case 1: return fn(x0)
-    default: return fn(x0)(x1)
-  }
+  return arguments.length < 2 ? fn(x0) : fn(x0)(x1)
 }
 
 const ary2of2 = fn => function (x0, x1) {
-  switch (arguments.length) {
-    case 0:
-    case 1: return x1 => fn(x0, x1)
-    default: return fn(x0, x1)
-  }
+  return arguments.length < 2 ? x1 => fn(x0, x1) : fn(x0, x1)
 }
 
 const ary1of3 = fn => function (x0, x1, x2) {
