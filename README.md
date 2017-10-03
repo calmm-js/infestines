@@ -54,7 +54,7 @@ are not provided.
     * [`I.values(object) ~> [...values]`](#I-values)
   * [OOP](#oop)
     * [`I.constructorOf(any) ~> Function|null|undefined`](#I-constructorOf)
-    * [`I.inherit(Derived, Base, Methods) ~> Derived`](#I-inherit)
+    * [`I.inherit(Derived, Base, Methods, Statics) ~> Derived`](#I-inherit)
 
 ## Reference
 
@@ -133,4 +133,4 @@ empty
 #### OOP
 
 ##### <a id="I-constructorOf"></a> [≡](#contents) [▶](https://polytypic.github.io/infestines/#I-constructorOf) [`I.constructorOf(any) ~> Function|null|undefined`](#I-constructorOf)
-##### <a id="I-inherit"></a> [≡](#contents) [▶](https://polytypic.github.io/infestines/#I-inherit) [`I.inherit(Derived, Base, Methods) ~> Derived`](#I-inherit)
+##### <a id="I-inherit"></a> [≡](#contents) [▶](https://polytypic.github.io/infestines/#I-inherit) [`I.inherit(Derived, Base, Methods, Statics) ~> Derived`](#I-inherit)
