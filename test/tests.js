@@ -240,14 +240,15 @@ describe("inherit", () => {
         }
         I.inherit(Base, Object, {
           Foo() {return this.Bar() + this._foo}
+        }, {
+          bar: 11
         })
         function Derived(foo) {
           Base.call(this, foo)
         }
         I.inherit(Derived, Base, {
-          Bar() {return 10}
+          Bar() {return 10 + Base.bar}
         })
         return new Derived(5).Foo()
-      }`,
-         15)
+      }`, 26)
 })
