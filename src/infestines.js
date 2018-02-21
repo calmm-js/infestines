@@ -152,10 +152,10 @@ export const hasU = (p, x) => Object.prototype.hasOwnProperty.call(x, p)
 
 //
 
+export const prototypeOf = x => (null == x ? x : Object.getPrototypeOf(x))
+
 export const constructorOf = x =>
-  x === undefined || x === null
-    ? x
-    : (hasU('constructor', x) ? Object.getPrototypeOf(x) : x).constructor
+  null == x ? x : (hasU('constructor', x) ? prototypeOf(x) : x).constructor
 
 //
 
@@ -165,7 +165,13 @@ export const isNumber = x => typeof x === 'number'
 
 export const isArray = Array.isArray
 
-export const isObject = x => (x ? Object === constructorOf(x) : false)
+const object = prototypeOf({})
+export const isObject = x =>
+  null != x &&
+  typeof x === 'object' &&
+  (hasU('constructor', x)
+    ? prototypeOf(x) === object
+    : x.constructor === Object)
 
 //
 
@@ -248,7 +254,7 @@ export function unzipObjIntoU(o, ks, vs) {
 
 export function keys(o) {
   if (o instanceof Object) {
-    if (Object === constructorOf(o)) {
+    if (isObject(o)) {
       const ks = []
       unzipObjIntoU(o, ks, 0)
       return ks
@@ -260,7 +266,7 @@ export function keys(o) {
 
 export function values(o) {
   if (o instanceof Object) {
-    if (Object === constructorOf(o)) {
+    if (isObject(o)) {
       const vs = []
       unzipObjIntoU(o, 0, vs)
       return vs
@@ -278,7 +284,7 @@ export function values(o) {
 export function assocPartialU(k, v, o) {
   const r = {}
   if (o instanceof Object) {
-    if (Object !== constructorOf(o)) o = toObject(o)
+    if (!isObject(o)) o = toObject(o)
     for (const l in o) {
       if (l !== k) {
         r[l] = o[l]
@@ -295,7 +301,7 @@ export function assocPartialU(k, v, o) {
 export function dissocPartialU(k, o) {
   let r
   if (o instanceof Object) {
-    if (Object !== constructorOf(o)) o = toObject(o)
+    if (!isObject(o)) o = toObject(o)
     for (const l in o) {
       if (l !== k) {
         if (!r) r = {}
