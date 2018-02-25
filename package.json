@@ -1,9 +1,10 @@
 {
   "name": "infestines",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "A minimalistic library to support writing FP libraries",
   "main": "dist/infestines.cjs.js",
   "module": "dist/infestines.es.js",
+  "sideEffects": false,
   "scripts": {
     "bench": "NODE_ENV=production node --expose-gc bench/bench.js",
     "dist": "npm run dist:umd & npm run dist:umd.min & npm run dist:es & npm run dist:cjs & wait",
@@ -67,7 +68,7 @@
     "rollup-plugin-replace": "^2.0.0",
     "rollup-plugin-uglify": "^3.0.0",
     "sprintf-js": "^1.1.1",
-    "uglify-js": "^3.3.11",
+    "uglify-js": "^3.3.12",
     "watch-run": "^1.2.5"
   }
 }
