@@ -2,21 +2,52 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var ary1of2 = function ary1of2(fn) {
+var id = function id(x) {
+  return x;
+};
+
+//
+
+var defineNameU = /*#__PURE__*/function () {
+  var defineNameU = function defineNameU(fn, value) {
+    return Object.defineProperty(fn, 'name', { value: value });
+  };
+  try {
+    return defineNameU(defineNameU, defineNameU.name);
+  } catch (_) {
+    return function (fn, _) {
+      return fn;
+    };
+  }
+}();
+
+var copyName = process.env.NODE_ENV === 'production' ? function (f) {
+  return f;
+} : function (to, from) {
+  return defineNameU(to, from.name);
+};
+
+var withName = process.env.NODE_ENV === 'production' ? id : function (ary) {
+  return function (fn) {
+    return copyName(ary(fn), fn);
+  };
+};
+
+var ary1of2 = /*#__PURE__*/withName(function (fn) {
   return function (x0, x1) {
     return arguments.length < 2 ? fn(x0) : fn(x0)(x1);
   };
-};
+});
 
-var ary2of2 = function ary2of2(fn) {
+var ary2of2 = /*#__PURE__*/withName(function (fn) {
   return function (x0, x1) {
-    return arguments.length < 2 ? function (x1) {
+    return arguments.length < 2 ? copyName(function (x1) {
       return fn(x0, x1);
-    } : fn(x0, x1);
+    }, fn) : fn(x0, x1);
   };
-};
+});
 
-var ary1of3 = function ary1of3(fn) {
+var ary1of3 = /*#__PURE__*/withName(function (fn) {
   return function (x0, x1, x2) {
     switch (arguments.length) {
       case 0:
@@ -28,43 +59,43 @@ var ary1of3 = function ary1of3(fn) {
         return curryN(2, fn(x0))(x1, x2);
     }
   };
-};
+});
 
-var ary2of3 = function ary2of3(fn) {
+var ary2of3 = /*#__PURE__*/withName(function (fn) {
   return function (x0, x1, x2) {
     switch (arguments.length) {
       case 0:
       case 1:
-        return ary1of2(function (x1) {
+        return ary1of2(copyName(function (x1) {
           return fn(x0, x1);
-        });
+        }, fn));
       case 2:
         return fn(x0, x1);
       default:
         return fn(x0, x1)(x2);
     }
   };
-};
+});
 
-var ary3of3 = function ary3of3(fn) {
+var ary3of3 = /*#__PURE__*/withName(function (fn) {
   return function (x0, x1, x2) {
     switch (arguments.length) {
       case 0:
       case 1:
-        return ary2of2(function (x1, x2) {
+        return ary2of2(copyName(function (x1, x2) {
           return fn(x0, x1, x2);
-        });
+        }, fn));
       case 2:
-        return function (x2) {
+        return copyName(function (x2) {
           return fn(x0, x1, x2);
-        };
+        }, fn);
       default:
         return fn(x0, x1, x2);
     }
   };
-};
+});
 
-var ary1of4 = function ary1of4(fn) {
+var ary1of4 = /*#__PURE__*/withName(function (fn) {
   return function (x0, x1, x2, x3) {
     switch (arguments.length) {
       case 0:
@@ -78,16 +109,16 @@ var ary1of4 = function ary1of4(fn) {
         return curryN(3, fn(x0))(x1, x2, x3);
     }
   };
-};
+});
 
-var ary2of4 = function ary2of4(fn) {
+var ary2of4 = /*#__PURE__*/withName(function (fn) {
   return function (x0, x1, x2, x3) {
     switch (arguments.length) {
       case 0:
       case 1:
-        return ary1of3(function (x1) {
+        return ary1of3(copyName(function (x1) {
           return fn(x0, x1);
-        });
+        }, fn));
       case 2:
         return curryN(2, fn(x0, x1));
       case 3:
@@ -96,59 +127,59 @@ var ary2of4 = function ary2of4(fn) {
         return curryN(2, fn(x0, x1))(x2, x3);
     }
   };
-};
+});
 
-var ary3of4 = function ary3of4(fn) {
+var ary3of4 = /*#__PURE__*/withName(function (fn) {
   return function (x0, x1, x2, x3) {
     switch (arguments.length) {
       case 0:
       case 1:
-        return ary2of3(function (x1, x2) {
+        return ary2of3(copyName(function (x1, x2) {
           return fn(x0, x1, x2);
-        });
+        }, fn));
       case 2:
-        return ary1of2(function (x2) {
+        return ary1of2(copyName(function (x2) {
           return fn(x0, x1, x2);
-        });
+        }, fn));
       case 3:
         return fn(x0, x1, x2);
       default:
         return fn(x0, x1, x2)(x3);
     }
   };
-};
+});
 
-var ary4of4 = function ary4of4(fn) {
+var ary4of4 = /*#__PURE__*/withName(function (fn) {
   return function (x0, x1, x2, x3) {
     switch (arguments.length) {
       case 0:
       case 1:
-        return ary3of3(function (x1, x2, x3) {
+        return ary3of3(copyName(function (x1, x2, x3) {
           return fn(x0, x1, x2, x3);
-        });
+        }, fn));
       case 2:
-        return ary2of2(function (x2, x3) {
+        return ary2of2(copyName(function (x2, x3) {
           return fn(x0, x1, x2, x3);
-        });
+        }, fn));
       case 3:
-        return function (x3) {
+        return copyName(function (x3) {
           return fn(x0, x1, x2, x3);
-        };
+        }, fn);
       default:
         return fn(x0, x1, x2, x3);
     }
   };
-};
+});
 
 var ary0of0 = function ary0of0(fn) {
-  return fn.length === 0 ? fn : function () {
+  return fn.length === 0 ? fn : copyName(function () {
     return fn();
-  };
+  }, fn);
 };
 var ary1of1 = function ary1of1(fn) {
-  return fn.length === 1 ? fn : function (x) {
+  return fn.length === 1 ? fn : copyName(function (x) {
     return fn(x);
-  };
+  }, fn);
 };
 
 var C = [[ary0of0], [ary1of1, ary1of1], [void 0, ary1of2, ary2of2], [void 0, ary1of3, ary2of3, ary3of3], [void 0, ary1of4, ary2of4, ary3of4, ary4of4]];
@@ -173,9 +204,6 @@ var toObject = function toObject(x) {
 
 //
 
-var id = function id(x) {
-  return x;
-};
 var always = function always(x) {
   return function (_) {
     return x;
@@ -406,12 +434,13 @@ var inherit = function inherit(Derived, Base, protos, statics) {
   return assign(Derived.prototype = Object.create(Base.prototype), protos).constructor = assign(Derived, statics);
 };
 
+exports.id = id;
+exports.defineNameU = defineNameU;
 exports.curryN = curryN;
 exports.arityN = arityN;
 exports.curry = curry;
 exports.assign = assign;
 exports.toObject = toObject;
-exports.id = id;
 exports.always = always;
 exports.applyU = applyU;
 exports.sndU = sndU;
