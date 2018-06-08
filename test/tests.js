@@ -11,9 +11,13 @@ function show(x) {
   }
 }
 
+const showExpr = expr => (R.is(Function, expr) ? expr.toString() : expr)
+const runExpr = expr =>
+  R.is(Function, expr) ? expr() : eval(`() => ${expr}`)()
+
 const testEq = (expr, expect) =>
-  it(`${expr} => ${show(expect)}`, () => {
-    const actual = eval(`() => ${expr}`)()
+  it(`${showExpr(expr)} => ${show(expect)}`, () => {
+    const actual = runExpr(expr)
     if (!I.acyclicEqualsU(actual, expect))
       throw new Error(`Expected: ${show(expect)}, actual: ${show(actual)}`)
   })
@@ -68,6 +72,19 @@ describe('currying', () => {
 
   expectFail(`I.curry(() => {})`)
   expectFail(`I.curry((a,b,c,d,e) => {})`)
+})
+
+describe('curry', () => {
+  testEq(
+    () => {
+      // eslint-disable-next-line prefer-arrow-callback
+      const foobar = I.curry(function foobar(x, y) {
+        return x + y
+      })
+      return [foobar.name, foobar(1).name]
+    },
+    ['foobar', 'foobar']
+  )
 })
 
 describe('arity', () => {
