@@ -8,14 +8,14 @@
   "scripts": {
     "bench": "NODE_ENV=production node --expose-gc bench/bench.js",
     "dist": "rollup -c && cp dist/infestines.js docs/",
-    "docs": "./scripts/generate-docs",
+    "docs": "klipse-github-docs-generator",
     "lint": "eslint src test",
-    "prepare": "npm run lint && npm run dist && npm run test",
+    "prepare": "npm run lint && npm run docs && npm run dist && npm run test",
     "report-coverage": "nyc report --reporter=lcov > coverage.lcov && codecov",
     "test": "nyc mocha && nyc report -r html mocha",
-    "watch": "concurrently \"npm run watch:dist\" \"npm run watch:docs\" \"livereload docs\" \"npm run watch:test\"",
+    "watch": "concurrently \"npm run watch:dist\" \"npm run watch:docs\" \"npm run watch:test\"",
     "watch:dist": "watch-run -d 50 -i -p 'src/**/*.js' npm run dist",
-    "watch:docs": "watch-run -d 50 -i -p '*.md' npm run docs",
+    "watch:docs": "watch-run -d 50 -i -p '*.md' npm run docs & livereload docs & wait",
     "watch:test": "watch-run -d 50    -p 'dist/infestines.cjs.js,test/**/*.js' npm run test"
   },
   "repository": {
@@ -31,7 +31,6 @@
   },
   "homepage": "https://github.com/polytypic/infestines#readme",
   "devDependencies": {
-    "8fold-marked": "^0.3.9",
     "babel-cli": "^6.26.0",
     "babel-eslint": "^8.2.3",
     "babel-plugin-annotate-pure-calls": "^0.2.2",
@@ -60,6 +59,7 @@
     "codecov": "^3.0.2",
     "concurrently": "^3.5.1",
     "eslint": "^4.19.1",
+    "klipse-github-docs-generator": "^0.3.3",
     "mocha": "^5.2.0",
     "nyc": "^12.0.2",
     "ramda": "^0.25.0",
