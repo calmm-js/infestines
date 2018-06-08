@@ -1,114 +1,155 @@
-const ary1of2 = fn =>
-  function(x0, x1) {
-    return arguments.length < 2 ? fn(x0) : fn(x0)(x1)
-  }
+export const id = x => x
 
-const ary2of2 = fn =>
-  function(x0, x1) {
-    return arguments.length < 2 ? x1 => fn(x0, x1) : fn(x0, x1)
-  }
+//
 
-const ary1of3 = fn =>
-  function(x0, x1, x2) {
-    switch (arguments.length) {
-      case 0:
-      case 1:
-        return curryN(2, fn(x0))
-      case 2:
-        return curryN(2, fn(x0))(x1)
-      default:
-        return curryN(2, fn(x0))(x1, x2)
+export const defineNameU = (() => {
+  const defineNameU = (fn, value) => Object.defineProperty(fn, 'name', {value})
+  try {
+    return defineNameU(defineNameU, defineNameU.name)
+  } catch (_) {
+    return (fn, _) => fn
+  }
+})()
+
+const copyName =
+  process.env.NODE_ENV === 'production'
+    ? f => f
+    : (to, from) => defineNameU(to, from.name)
+
+const withName =
+  process.env.NODE_ENV === 'production'
+    ? id
+    : ary => fn => copyName(ary(fn), fn)
+
+const ary1of2 = withName(
+  fn =>
+    function(x0, x1) {
+      return arguments.length < 2 ? fn(x0) : fn(x0)(x1)
     }
-  }
+)
 
-const ary2of3 = fn =>
-  function(x0, x1, x2) {
-    switch (arguments.length) {
-      case 0:
-      case 1:
-        return ary1of2(x1 => fn(x0, x1))
-      case 2:
-        return fn(x0, x1)
-      default:
-        return fn(x0, x1)(x2)
+const ary2of2 = withName(
+  fn =>
+    function(x0, x1) {
+      return arguments.length < 2 ? copyName(x1 => fn(x0, x1), fn) : fn(x0, x1)
     }
-  }
+)
 
-const ary3of3 = fn =>
-  function(x0, x1, x2) {
-    switch (arguments.length) {
-      case 0:
-      case 1:
-        return ary2of2((x1, x2) => fn(x0, x1, x2))
-      case 2:
-        return x2 => fn(x0, x1, x2)
-      default:
-        return fn(x0, x1, x2)
+const ary1of3 = withName(
+  fn =>
+    function(x0, x1, x2) {
+      switch (arguments.length) {
+        case 0:
+        case 1:
+          return curryN(2, fn(x0))
+        case 2:
+          return curryN(2, fn(x0))(x1)
+        default:
+          return curryN(2, fn(x0))(x1, x2)
+      }
     }
-  }
+)
 
-const ary1of4 = fn =>
-  function(x0, x1, x2, x3) {
-    switch (arguments.length) {
-      case 0:
-      case 1:
-        return curryN(3, fn(x0))
-      case 2:
-        return curryN(3, fn(x0))(x1)
-      case 3:
-        return curryN(3, fn(x0))(x1, x2)
-      default:
-        return curryN(3, fn(x0))(x1, x2, x3)
+const ary2of3 = withName(
+  fn =>
+    function(x0, x1, x2) {
+      switch (arguments.length) {
+        case 0:
+        case 1:
+          return ary1of2(copyName(x1 => fn(x0, x1), fn))
+        case 2:
+          return fn(x0, x1)
+        default:
+          return fn(x0, x1)(x2)
+      }
     }
-  }
+)
 
-const ary2of4 = fn =>
-  function(x0, x1, x2, x3) {
-    switch (arguments.length) {
-      case 0:
-      case 1:
-        return ary1of3(x1 => fn(x0, x1))
-      case 2:
-        return curryN(2, fn(x0, x1))
-      case 3:
-        return curryN(2, fn(x0, x1))(x2)
-      default:
-        return curryN(2, fn(x0, x1))(x2, x3)
+const ary3of3 = withName(
+  fn =>
+    function(x0, x1, x2) {
+      switch (arguments.length) {
+        case 0:
+        case 1:
+          return ary2of2(copyName((x1, x2) => fn(x0, x1, x2), fn))
+        case 2:
+          return copyName(x2 => fn(x0, x1, x2), fn)
+        default:
+          return fn(x0, x1, x2)
+      }
     }
-  }
+)
 
-const ary3of4 = fn =>
-  function(x0, x1, x2, x3) {
-    switch (arguments.length) {
-      case 0:
-      case 1:
-        return ary2of3((x1, x2) => fn(x0, x1, x2))
-      case 2:
-        return ary1of2(x2 => fn(x0, x1, x2))
-      case 3:
-        return fn(x0, x1, x2)
-      default:
-        return fn(x0, x1, x2)(x3)
+const ary1of4 = withName(
+  fn =>
+    function(x0, x1, x2, x3) {
+      switch (arguments.length) {
+        case 0:
+        case 1:
+          return curryN(3, fn(x0))
+        case 2:
+          return curryN(3, fn(x0))(x1)
+        case 3:
+          return curryN(3, fn(x0))(x1, x2)
+        default:
+          return curryN(3, fn(x0))(x1, x2, x3)
+      }
     }
-  }
+)
 
-const ary4of4 = fn =>
-  function(x0, x1, x2, x3) {
-    switch (arguments.length) {
-      case 0:
-      case 1:
-        return ary3of3((x1, x2, x3) => fn(x0, x1, x2, x3))
-      case 2:
-        return ary2of2((x2, x3) => fn(x0, x1, x2, x3))
-      case 3:
-        return x3 => fn(x0, x1, x2, x3)
-      default:
-        return fn(x0, x1, x2, x3)
+const ary2of4 = withName(
+  fn =>
+    function(x0, x1, x2, x3) {
+      switch (arguments.length) {
+        case 0:
+        case 1:
+          return ary1of3(copyName(x1 => fn(x0, x1), fn))
+        case 2:
+          return curryN(2, fn(x0, x1))
+        case 3:
+          return curryN(2, fn(x0, x1))(x2)
+        default:
+          return curryN(2, fn(x0, x1))(x2, x3)
+      }
     }
-  }
+)
 
-const ary0of0 = fn => (fn.length === 0 ? fn : () => fn())
-const ary1of1 = fn => (fn.length === 1 ? fn : x => fn(x))
+const ary3of4 = withName(
+  fn =>
+    function(x0, x1, x2, x3) {
+      switch (arguments.length) {
+        case 0:
+        case 1:
+          return ary2of3(copyName((x1, x2) => fn(x0, x1, x2), fn))
+        case 2:
+          return ary1of2(copyName(x2 => fn(x0, x1, x2), fn))
+        case 3:
+          return fn(x0, x1, x2)
+        default:
+          return fn(x0, x1, x2)(x3)
+      }
+    }
+)
+
+const ary4of4 = withName(
+  fn =>
+    function(x0, x1, x2, x3) {
+      switch (arguments.length) {
+        case 0:
+        case 1:
+          return ary3of3(copyName((x1, x2, x3) => fn(x0, x1, x2, x3), fn))
+        case 2:
+          return ary2of2(copyName((x2, x3) => fn(x0, x1, x2, x3), fn))
+        case 3:
+          return copyName(x3 => fn(x0, x1, x2, x3), fn)
+        default:
+          return fn(x0, x1, x2, x3)
+      }
+    }
+)
+
+const ary0of0 = fn => (fn.length === 0 ? fn : copyName(() => fn(), fn))
+const ary1of1 = fn => (fn.length === 1 ? fn : copyName(x => fn(x), fn))
 
 const C = [
   [ary0of0],
@@ -130,7 +171,6 @@ export const toObject = x => assign({}, x)
 
 //
 
-export const id = x => x
 export const always = x => _ => x
 export const applyU = (x2y, x) => x2y(x)
 export const sndU = (_, y) => y
