@@ -1,6 +1,6 @@
 import babel from 'rollup-plugin-babel'
 import replace from 'rollup-plugin-replace'
-import uglify from 'rollup-plugin-uglify'
+import {uglify} from 'rollup-plugin-uglify'
 
 const build = ({NODE_ENV, format, suffix}) => ({
   input: 'src/infestines.js',
