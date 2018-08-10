@@ -2,10 +2,13 @@ export const id = x => x
 
 //
 
+function _defineNameU(fn, value) {
+  return Object.defineProperty(fn, 'name', {value, configurable: true})
+}
+
 export const defineNameU = (() => {
-  const _defineNameU = (fn, value) => Object.defineProperty(fn, 'name', {value})
   try {
-    return _defineNameU(_defineNameU, _defineNameU.name.slice(1))
+    return _defineNameU(_defineNameU, 'defineNameU')
   } catch (_) {
     return (fn, _) => fn
   }
