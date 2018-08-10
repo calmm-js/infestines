@@ -1,6 +1,6 @@
 {
   "name": "infestines",
-  "version": "0.4.9",
+  "version": "0.4.10",
   "description": "A minimalistic library to support writing FP libraries",
   "main": "dist/infestines.cjs.js",
   "module": "dist/infestines.es.js",
