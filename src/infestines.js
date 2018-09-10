@@ -8,7 +8,7 @@ function _defineNameU(fn, value) {
 
 export const defineNameU = (() => {
   try {
-    return _defineNameU(_defineNameU, 'defineNameU')
+    return _defineNameU(_defineNameU, 'defineName')
   } catch (_) {
     return (fn, _) => fn
   }
@@ -175,8 +175,12 @@ export const toObject = x => assign({}, x)
 //
 
 export const always = x => _ => x
-export const applyU = (x2y, x) => x2y(x)
-export const sndU = (_, y) => y
+export const applyU = function apply(x2y, x) {
+  return x2y(x)
+}
+export const sndU = function snd(_, y) {
+  return y
+}
 
 //
 
@@ -191,7 +195,9 @@ export const isDefined = x => void 0 !== x
 
 //
 
-export const hasU = (p, x) => Object.prototype.hasOwnProperty.call(x, p)
+export const hasU = function has(p, x) {
+  return Object.prototype.hasOwnProperty.call(x, p)
+}
 
 //
 
@@ -218,12 +224,14 @@ export const isObject = x =>
 
 //
 
-export function pipe2U(fn1, fn2) {
+export const pipe2U = function pipe2(fn1, fn2) {
   const n = fn1.length
   return n === 1 ? x => fn2(fn1(x)) : arityN(n, (...xs) => fn2(fn1(...xs)))
 }
 
-export const compose2U = (fn1, fn2) => pipe2U(fn2, fn1)
+export const compose2U = function compose2(fn1, fn2) {
+  return pipe2U(fn2, fn1)
+}
 
 //
 
@@ -239,12 +247,13 @@ export function seqPartial(x, ...fns) {
 
 //
 
-export const identicalU = (a, b) =>
-  (a === b && (a !== 0 || 1 / a === 1 / b)) || (a !== a && b !== b)
+export const identicalU = function identical(a, b) {
+  return (a === b && (a !== 0 || 1 / a === 1 / b)) || (a !== a && b !== b)
+}
 
 //
 
-export function whereEqU(t, o) {
+export const whereEqU = function whereEq(t, o) {
   for (const k in t) {
     const bk = o[k]
     if ((!isDefined(bk) && !hasU(k, o)) || !acyclicEqualsU(t[k], bk))
@@ -255,7 +264,7 @@ export function whereEqU(t, o) {
 
 //
 
-export function hasKeysOfU(t, o) {
+export const hasKeysOfU = function hasKeysOf(t, o) {
   for (const k in t) if (!hasU(k, o)) return false
   return true
 }
@@ -271,7 +280,7 @@ function acyclicEqualsArray(a, b) {
   return true
 }
 
-export function acyclicEqualsU(a, b) {
+export const acyclicEqualsU = function acyclicEquals(a, b) {
   if (identicalU(a, b)) return true
   if (!a || !b) return false
   const c = constructorOf(a)
@@ -288,7 +297,7 @@ export function acyclicEqualsU(a, b) {
 
 //
 
-export function unzipObjIntoU(o, ks, vs) {
+export const unzipObjIntoU = function unzipObjInto(o, ks, vs) {
   for (const k in o) {
     if (ks) ks.push(k)
     if (vs) vs.push(o[k])
@@ -324,7 +333,7 @@ export function values(o) {
 
 //
 
-export function assocPartialU(k, v, o) {
+export const assocPartialU = function assocPartial(k, v, o) {
   const r = {}
   if (o instanceof Object) {
     if (!isObject(o)) o = toObject(o)
@@ -341,7 +350,7 @@ export function assocPartialU(k, v, o) {
   return r
 }
 
-export function dissocPartialU(k, o) {
+export const dissocPartialU = function dissocPartial(k, o) {
   let r
   if (o instanceof Object) {
     if (!isObject(o)) o = toObject(o)

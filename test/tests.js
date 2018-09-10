@@ -286,7 +286,7 @@ if (process.env.NODE_ENV !== 'production')
   describe('function names', () => {
     for (const k in I) {
       if (I.isFunction(I[k])) {
-        testEq(`I.${k}.name`, k)
+        testEq(`I.${k}.name`, k.replace(/U$/, ''))
       }
     }
   })
