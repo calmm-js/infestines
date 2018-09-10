@@ -23,10 +23,15 @@ const runExpr = expr =>
   R.is(Function, expr) ? expr() : eval(`() => ${expr}`)()
 
 const testEq = (expr, expect) =>
-  it(`${showExpr(expr)} => ${show(expect)}`, () => {
+  it(`${showExpr(expr)} => ${show(expect)}`, done => {
     const actual = runExpr(expr)
-    if (!I.acyclicEqualsU(actual, expect))
-      throw new Error(`Expected: ${show(expect)}, actual: ${show(actual)}`)
+    function check(actual) {
+      if (!R.equals(actual, expect))
+        done(Error(`Expected: ${show(expect)}, actual: ${show(actual)}`))
+      else done()
+    }
+    if (I.isThenable(actual)) actual.then(check, check)
+    else check(actual)
   })
 
 const expectFail = expr =>
@@ -301,6 +306,104 @@ describe('inherit', () => {
     })
     return new Derived(5).Foo()
   }, 26)
+})
+
+const traverse = ({map, of, ap}, f, o) => {
+  let r = of(0)
+  for (const k in o) r = ap(map(v => r => [k, v, r], f(o[k])), r)
+  return map(kvs => {
+    const r = I.isArray(o) ? [] : I.create(I.prototypeOf(o))
+    while (kvs) {
+      r[kvs[0]] = kvs[1]
+      kvs = kvs[2]
+    }
+    return r
+  }, r)
+}
+
+describe('IdentityAsync', () => {
+  const IF = I.Functor(I.IdentityAsync.map)
+  const IA = I.Applicative(IF.map, I.IdentityAsync.of, I.IdentityAsync.ap)
+
+  testEq(() => traverse(IA, I.id, ['a', 'b']), ['a', 'b'])
+  testEq(() => traverse(IA, I.id, {x: 'a', y: I.resolve('b')}), {
+    x: 'a',
+    y: 'b'
+  })
+  testEq(() => traverse(IA, I.id, [I.resolve('a'), 'b']), ['a', 'b'])
+  testEq(() => traverse(IA, I.id, [I.resolve('a'), I.resolve('b')]), ['a', 'b'])
+  testEq(() => I.IdentityAsync.chain(x => x + 2, 1), 3)
+  testEq(() => I.IdentityAsync.chain(x => x + 2, I.resolve(1)), 3)
+  testEq(() => I.IdentityAsync.chain(x => I.resolve(x + 2), I.resolve(1)), 3)
+})
+
+describe('fantasy interop', () => {
+  class MaybeFunctor {
+    ['fantasy-land/map'](f) {
+      return new Some(f(this.value))
+    }
+  }
+  class MaybeApplicative extends MaybeFunctor {
+    static ['fantasy-land/of'](x) {
+      return new Some(x)
+    }
+    ['fantasy-land/ap'](f) {
+      return f instanceof Some ? new Some(f.value(this.value)) : new None()
+    }
+  }
+  class MaybeMonad extends MaybeApplicative {
+    ['fantasy-land/chain'](f) {
+      return f(this.value)
+    }
+  }
+  class None extends MaybeMonad {
+    ['fantasy-land/map'](_f) {
+      return this
+    }
+    ['fantasy-land/ap'](_f) {
+      return this
+    }
+    ['fantasy-land/chain'](_f) {
+      return this
+    }
+  }
+  class Some extends MaybeMonad {
+    constructor(value) {
+      super()
+      this.value = value
+    }
+  }
+  testEq(
+    () => I.fromFantasy(MaybeFunctor).map(x => ({x}), new Some(3)),
+    new Some({x: 3})
+  )
+  testEq(
+    () =>
+      traverse(I.fromFantasy(MaybeApplicative), R.identity, [
+        new Some(3),
+        new Some(1),
+        new Some(4)
+      ]),
+    new Some([3, 1, 4])
+  )
+  testEq(
+    () =>
+      traverse(I.fromFantasy(MaybeApplicative), R.identity, [
+        new Some(3),
+        new None(),
+        new Some(4)
+      ]),
+    new None()
+  )
+  testEq(
+    () =>
+      traverse(I.fromFantasy(MaybeMonad), R.identity, [
+        new Some(3),
+        new Some(1),
+        new Some(4)
+      ]),
+    new Some([3, 1, 4])
+  )
 })
 
 if (process.env.NODE_ENV !== 'production')
