@@ -198,12 +198,14 @@ XYZ.prototype.sum = function() {
 }
 
 describe('keys', () => {
+  testEq(() => I.keys(null), undefined)
   testEq(() => I.keys({}), [])
   testEq(() => I.keys({x: 1, y: 2}), ['x', 'y'])
   testEq(() => I.keys(new XYZ(3, 1, 4)), ['x', 'y', 'z'])
 })
 
 describe('values', () => {
+  testEq(() => I.values(0), undefined)
   testEq(() => I.values({}), [])
   testEq(() => I.values({x: 1, y: 2}), [1, 2])
   testEq(() => I.values(new XYZ(3, 1, 4)), [3, 1, 4])
