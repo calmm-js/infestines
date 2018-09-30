@@ -28,7 +28,7 @@
       plugin</a>.
     </p>
     <hr>
-    <h1><a id="infestines"></a> Infestines &middot; <a href="https://github.com/polytypic/infestines"><img src="https://img.shields.io/github/stars/polytypic/infestines.svg?style=social" alt="GitHub stars"></a> <a href="https://www.npmjs.com/package/infestines"><img src="https://img.shields.io/npm/dm/infestines.svg" alt="npm"></a></h1>
+    <h1><a id="infestines"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#infestines">■</a> <a href="#infestines">Infestines</a> &middot; <a href="https://github.com/polytypic/infestines"><img src="https://img.shields.io/github/stars/polytypic/infestines.svg?style=social" alt="GitHub stars"></a> <a href="https://www.npmjs.com/package/infestines"><img src="https://img.shields.io/npm/dm/infestines.svg" alt="npm"></a></h1>
 <p>This is a minimalistic library of basic utilities, such as currying, for writing
 more interesting high performance FP libraries.  <strong>This library is not intended
 to be used for application programming.</strong> Primitives that are too specialized to
@@ -39,7 +39,7 @@ are not provided.</p>
 <a href="https://travis-ci.org/polytypic/infestines"><img src="https://travis-ci.org/polytypic/infestines.svg?branch=master" alt="Build Status"></a>
 <a href="https://codecov.io/github/polytypic/infestines?branch=master"><img src="https://img.shields.io/codecov/c/github/polytypic/infestines/master.svg" alt="Code Coverage"></a>
 <a href="https://david-dm.org/polytypic/infestines"><img src="https://david-dm.org/polytypic/infestines.svg" alt=""></a> <a href="https://david-dm.org/polytypic/infestines?type=dev"><img src="https://david-dm.org/polytypic/infestines/dev-status.svg" alt=""></a></p>
-<h2 id="contents">Contents</h2>
+<h2><a id="contents"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#contents">■</a> <a href="#contents">Contents</a></h2>
 <ul>
 <li><a href="#reference">Reference</a><ul>
 <li><a href="#currying">Currying</a><ul>
@@ -74,9 +74,11 @@ are not provided.</p>
 <li><a href="#I-isArray"><code>I.isArray(any) ~&gt; boolean</code></a></li>
 <li><a href="#I-isDefined"><code>I.isDefined(any) ~&gt; boolean</code></a></li>
 <li><a href="#I-isFunction"><code>I.isFunction(any) ~&gt; boolean</code></a></li>
+<li><a href="#I-isInstanceOfU"><code>I.isInstanceOfU(Type, any) ~&gt; boolean</code></a></li>
 <li><a href="#I-isNumber"><code>I.isNumber(any) ~&gt; boolean</code></a></li>
 <li><a href="#I-isObject"><code>I.isObject(any) ~&gt; boolean</code></a></li>
 <li><a href="#I-isString"><code>I.isString(any) ~&gt; boolean</code></a></li>
+<li><a href="#I-isThenable"><code>I.isThenable(any) ~&gt; boolean</code></a></li>
 </ul>
 </li>
 <li><a href="#equality">Equality</a><ul>
@@ -91,20 +93,62 @@ are not provided.</p>
 <li><a href="#I-dissocPartialU"><code>I.dissocPartialU(key, object) ~&gt; object|undefined</code></a></li>
 <li><a href="#I-hasU"><code>I.hasU(propName, object) ~&gt; boolean</code></a></li>
 <li><a href="#I-keys"><code>I.keys(object) ~&gt; [...keys]</code></a></li>
+<li><a href="#I-toObject"><code>I.toObject(object) ~&gt; object</code></a></li>
 <li><a href="#I-unzipObjIntoU"><code>I.unzipObjIntoU(object, keys, values)</code></a></li>
 <li><a href="#I-values"><code>I.values(object) ~&gt; [...values]</code></a></li>
 </ul>
 </li>
 <li><a href="#oop">OOP</a><ul>
-<li><a href="#I-constructorOf"><code>I.constructorOf(any) ~&gt; Function|null|undefined</code></a></li>
 <li><a href="#I-inherit"><code>I.inherit(Derived, Base, Methods, Statics) ~&gt; Derived</code></a></li>
 </ul>
 </li>
+<li><a href="#meta">Meta</a><ul>
+<li><a href="#I-constructorOf"><code>I.constructorOf(any) ~&gt; Function|null|undefined</code></a></li>
+<li><a href="#I-create"><code>I.create(proto[, properties]) ~&gt; object</code></a></li>
+<li><a href="#I-freeze"><code>I.freeze(any) ~&gt; any</code></a></li>
+<li><a href="#I-defineNameU"><code>I.defineNameU(function, string) ~&gt; function</code></a></li>
+<li><a href="#I-prototypeOf"><code>I.prototypeOf(any) ~&gt; object|null|undefined</code></a></li>
+</ul>
+</li>
+<li><a href="#imperative">Imperative</a><ul>
+<li><a href="#I-assign"><code>I.assign(to, ...from) ~&gt; to</code></a></li>
+</ul>
+</li>
+<li><a href="#promises">Promises</a><ul>
+<li><a href="#I-resolve"><code>I.resolve(any) ~&gt; promise</code></a></li>
+</ul>
+</li>
+<li><a href="#algebras">Algebras</a><ul>
+<li><a href="#algebra-constructors">Algebra constructors</a><ul>
+<li><a href="#I-Functor"><code>I.Functor(map) ~&gt; functor</code></a></li>
+<li><a href="#I-Applicative"><code>I.Applicative(map, of, ap) ~&gt; applicative</code></a></li>
+<li><a href="#I-Monad"><code>I.Monad(map, of, ap, chain) ~&gt; monad</code></a></li>
+</ul>
+</li>
+<li><a href="#fantasy-land">Fantasy land</a><ul>
+<li><a href="#I-FantasyFunctor"><code>I.FantasyFunctor ~&gt; functor</code></a></li>
+<li><a href="#I-fromFantasyApplicative"><code>I.fromFantasyApplictive(Type) ~&gt; applicative</code></a></li>
+<li><a href="#I-fromFantasyMonad"><code>I.fromFantasyMonad(Type) ~&gt; monad</code></a></li>
+<li><a href="#I-fromFantasy"><code>I.fromFantasy(Type) ~&gt; functor|applicative|monad</code></a></li>
+</ul>
+</li>
+<li><a href="#base-algebras">Base algebras</a><ul>
+<li><a href="#I-Async"><code>I.Async ~&gt; monadish</code></a></li>
+<li><a href="#I-Identity"><code>I.Identity ~&gt; monad</code></a></li>
+<li><a href="#I-IdentityAsync"><code>I.IdentityAsync ~&gt; monadish</code></a></li>
+</ul>
+</li>
+<li><a href="#algebra-combinators">Algebra combinators</a><ul>
+<li><a href="#I-IdentityOrU"><code>I.IdentityOrU(predicate, monad) ~&gt; monad</code></a></li>
 </ul>
 </li>
 </ul>
-<h2 id="reference">Reference</h2>
-<h4 id="currying">Currying</h4>
+</li>
+</ul>
+</li>
+</ul>
+<h2><a id="reference"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#reference">■</a> <a href="#reference">Reference</a></h2>
+<h4><a id="currying"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#currying">■</a> <a href="#currying">Currying</a></h4>
 <h5><a id="I-arityN"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-arityN">■</a> <a href="#I-arityN"><code>I.arityN(n, (x1, ..., xm) =&gt; y) ~&gt; x1 =&gt; ... =&gt; xn =&gt; y</code></a></h5>
 <h5><a id="I-curry"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-curry">■</a> <a href="#I-curry"><code>I.curry((x1, ..., xn) =&gt; y) ~&gt; x1 =&gt; ... =&gt; xn =&gt; y</code></a></h5>
 <h5><a id="I-curryN"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-curryN">■</a> <a href="#I-curryN"><code>I.curryN(n, (x1, ..., xn) =&gt; y) ~&gt; x1 =&gt; ... =&gt; xn =&gt; y</code></a></h5>
@@ -113,18 +157,18 @@ are not provided.</p>
   return y =&gt; x2 + y
 })(2, 3)
 </code></pre>
-<h4 id="function-composition">Function composition</h4>
+<h4><a id="function-composition"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#function-composition">■</a> <a href="#function-composition">Function composition</a></h4>
 <h5><a id="I-compose2U"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-compose2U">■</a> <a href="#I-compose2U"><code>I.compose2U(b =&gt; c, (a1, ..., aN) =&gt; b) ~&gt; a1 =&gt; ... aN =&gt; c</code></a></h5>
 <h5><a id="I-pipe2U"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-pipe2U">■</a> <a href="#I-pipe2U"><code>I.pipe2U((a1, ..., an) =&gt; b, b =&gt; c) ~&gt; a1 =&gt; ... aN =&gt; c</code></a></h5>
-<h4 id="sequencing">Sequencing</h4>
+<h4><a id="sequencing"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#sequencing">■</a> <a href="#sequencing">Sequencing</a></h4>
 <h5><a id="I-seq"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-seq">■</a> <a href="#I-seq"><code>I.seq(value, ...fns) ~&gt; value</code></a></h5>
 <h5><a id="I-seqPartial"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-seqPartial">■</a> <a href="#I-seq"><code>I.seqPartial(maybeValue, ...fns) ~&gt; maybeValue</code></a></h5>
-<h4 id="basic-combinators">Basic combinators</h4>
+<h4><a id="basic-combinators"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#basic-combinators">■</a> <a href="#basic-combinators">Basic combinators</a></h4>
 <h5><a id="I-always"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-always">■</a> <a href="#I-always"><code>I.always(x) ~&gt; _ =&gt; x</code></a></h5>
 <h5><a id="I-applyU"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-applyU">■</a> <a href="#I-applyU"><code>I.applyU(x =&gt; y, x) ~&gt; y</code></a></h5>
 <h5><a id="I-id"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-id">■</a> <a href="#I-id"><code>I.id(x) ~&gt; x</code></a></h5>
 <h5><a id="I-sndU"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-sndU">■</a> <a href="#I-sndU"><code>I.sndU(_, x) ~&gt; x</code></a></h5>
-<h4 id="constants">Constants</h4>
+<h4><a id="constants"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#constants">■</a> <a href="#constants">Constants</a></h4>
 <h5><a id="I-array0"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-array0">■</a> <a href="#I-array0"><code>I.array0 ~&gt; []</code></a></h5>
 <p><code>I.array0</code> is an
 empty
@@ -135,28 +179,56 @@ empty
 empty
 <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze">frozen</a> object
 <code>{}</code>.</p>
-<h4 id="type-predicates">Type predicates</h4>
+<h4><a id="type-predicates"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#type-predicates">■</a> <a href="#type-predicates">Type predicates</a></h4>
 <h5><a id="I-isArray"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-isArray">■</a> <a href="#I-isArray"><code>I.isArray(any) ~&gt; boolean</code></a></h5>
 <h5><a id="I-isDefined"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-isDefined">■</a> <a href="#I-isDefined"><code>I.isDefined(any) ~&gt; boolean</code></a></h5>
 <h5><a id="I-isFunction"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-isFunction">■</a> <a href="#I-isFunction"><code>I.isFunction(any) ~&gt; boolean</code></a></h5>
+<h5><a id="I-isInstanceOfU"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-isInstanceOfU">■</a> <a href="#I-isInstanceOfU"><code>I.isInstanceOfU(Type, any) ~&gt; boolean</code></a></h5>
 <h5><a id="I-isNumber"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-isNumber">■</a> <a href="#I-isNumber"><code>I.isNumber(any) ~&gt; boolean</code></a></h5>
 <h5><a id="I-isObject"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-isObject">■</a> <a href="#I-isObject"><code>I.isObject(any) ~&gt; boolean</code></a></h5>
 <h5><a id="I-isString"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-isString">■</a> <a href="#I-isString"><code>I.isString(any) ~&gt; boolean</code></a></h5>
-<h4 id="equality">Equality</h4>
+<h5><a id="I-isThenable"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-isThenable">■</a> <a href="#I-isThenable"><code>I.isThenable(any) ~&gt; boolean</code></a></h5>
+<h4><a id="equality"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#equality">■</a> <a href="#equality">Equality</a></h4>
 <h5><a id="I-acyclicEqualsU"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-acyclicEqualsU">■</a> <a href="#I-acyclicEqualsU"><code>I.acyclicEqualsU(any, any) ~&gt; boolean</code></a></h5>
 <h5><a id="I-hasKeysOfU"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-hasKeysOfU">■</a> <a href="#I-hasKeysOfU"><code>I.hasKeysOfU(template, object)</code></a></h5>
 <h5><a id="I-identicalU"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-identicalU">■</a> <a href="#I-identicalU"><code>I.identicalU(any, any) ~&gt; boolean</code></a></h5>
 <h5><a id="I-whereEqU"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-whereEqU">■</a> <a href="#I-whereEqU"><code>I.whereEqU(template, object)</code></a></h5>
-<h4 id="objects">Objects</h4>
+<h4><a id="objects"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#objects">■</a> <a href="#objects">Objects</a></h4>
 <h5><a id="I-assocPartialU"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-assocPartialU">■</a> <a href="#I-assocPartialU"><code>I.assocPartialU(key, value, object) ~&gt; object</code></a></h5>
 <h5><a id="I-dissocPartialU"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-dissocPartialU">■</a> <a href="#I-dissocPartialU"><code>I.dissocPartialU(key, object) ~&gt; object|undefined</code></a></h5>
 <h5><a id="I-hasU"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-hasU">■</a> <a href="#I-hasU"><code>I.hasU(propName, object) ~&gt; boolean</code></a></h5>
 <h5><a id="I-keys"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-keys">■</a> <a href="#I-keys"><code>I.keys(object) ~&gt; [...keys]</code></a></h5>
+<h5><a id="I-toObject"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-toObject">■</a> <a href="#I-toObject"><code>I.toObject(object) ~&gt; object</code></a></h5>
 <h5><a id="I-unzipObjIntoU"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-unzipObjIntoU">■</a> <a href="#I-unzipObjIntoU"><code>I.unzipObjIntoU(object, keys, values)</code></a></h5>
 <h5><a id="I-values"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-values">■</a> <a href="#I-values"><code>I.values(object) ~&gt; [...values]</code></a></h5>
-<h4 id="oop">OOP</h4>
-<h5><a id="I-constructorOf"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-constructorOf">■</a> <a href="#I-constructorOf"><code>I.constructorOf(any) ~&gt; Function|null|undefined</code></a></h5>
+<h4><a id="oop"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#oop">■</a> <a href="#oop">OOP</a></h4>
 <h5><a id="I-inherit"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-inherit">■</a> <a href="#I-inherit"><code>I.inherit(Derived, Base, Methods, Statics) ~&gt; Derived</code></a></h5>
+<h4><a id="meta"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#meta">■</a> <a href="#meta">Meta</a></h4>
+<h5><a id="I-constructorOf"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-constructorOf">■</a> <a href="#I-constructorOf"><code>I.constructorOf(any) ~&gt; Function|null|undefined</code></a></h5>
+<h5><a id="I-create"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-create">■</a> <a href="#I-create"><code>I.create(proto[, properties]) ~&gt; object</code></a></h5>
+<h5><a id="I-freeze"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-freeze">■</a> <a href="#I-freeze"><code>I.freeze(any) ~&gt; any</code></a></h5>
+<h5><a id="I-defineNameU"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-defineNameU">■</a> <a href="#I-defineNameU"><code>I.defineNameU(function, string) ~&gt; function</code></a></h5>
+<h5><a id="I-prototypeOf"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-prototypeOf">■</a> <a href="#I-prototypeOf"><code>I.prototypeOf(any) ~&gt; object|null|undefined</code></a></h5>
+<h4><a id="imperative"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#imperative">■</a> <a href="#imperative">Imperative</a></h4>
+<h5><a id="I-assign"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-assign">■</a> <a href="#I-assign"><code>I.assign(to, ...from) ~&gt; to</code></a></h5>
+<h4><a id="promises"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#promises">■</a> <a href="#promises">Promises</a></h4>
+<h5><a id="I-resolve"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-resolve">■</a> <a href="#I-resolve"><code>I.resolve(any) ~&gt; promise</code></a></h5>
+<h4><a id="algebras"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#algebras">■</a> <a href="#algebras">Algebras</a></h4>
+<h5><a id="algebra-constructors"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#algebra-constructors">■</a> <a href="#algebra-constructors">Algebra constructors</a></h5>
+<h6><a id="I-Functor"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-Functor">■</a> <a href="#I-Functor"><code>I.Functor(map) ~&gt; functor</code></a></h6>
+<h6><a id="I-Applicative"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-Applicative">■</a> <a href="#I-Applicative"><code>I.Applicative(map, of, ap) ~&gt; applicative</code></a></h6>
+<h6><a id="I-Monad"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-Monad">■</a> <a href="#I-Monad"><code>I.Monad(map, of, ap, chain) ~&gt; monad</code></a></h6>
+<h5><a id="fantasy-land"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#fantasy-land">■</a> <a href="#fantasy-land">Fantasy land</a></h5>
+<h6><a id="I-FantasyFunctor"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-FantasyFunctor">■</a> <a href="#I-FantasyFunctor"><code>I.FantasyFunctor ~&gt; functor</code></a></h6>
+<h6><a id="I-fromFantasyApplicative"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-fromFantasyApplicative">■</a> <a href="#I-fromFantasyApplicative"><code>I.fromFantasyApplictive(Type) ~&gt; applicative</code></a></h6>
+<h6><a id="I-fromFantasyMonad"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-fromFantasyMonad">■</a> <a href="#I-fromFantasyMonad"><code>I.fromFantasyMonad(Type) ~&gt; monad</code></a></h6>
+<h6><a id="I-fromFantasy"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-fromFantasy">■</a> <a href="#I-fromFantasy"><code>I.fromFantasy(Type) ~&gt; functor|applicative|monad</code></a></h6>
+<h5><a id="base-algebras"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#base-algebras">■</a> <a href="#base-algebras">Base algebras</a></h5>
+<h6><a id="I-Async"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-Async">■</a> <a href="#I-Async"><code>I.Async ~&gt; monadish</code></a></h6>
+<h6><a id="I-Identity"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-Identity">■</a> <a href="#I-Identity"><code>I.Identity ~&gt; monad</code></a></h6>
+<h6><a id="I-IdentityAsync"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-IdentityAsync">■</a> <a href="#I-IdentityAsync"><code>I.IdentityAsync ~&gt; monadish</code></a></h6>
+<h5><a id="algebra-combinators"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#algebra-combinators">■</a> <a href="#algebra-combinators">Algebra combinators</a></h5>
+<h6><a id="I-IdentityOrU"></a> <a href="#contents">≡</a> <a href="https://github.com/polytypic/infestines/blob/master/README.md#I-IdentityOrU">■</a> <a href="#I-IdentityOrU"><code>I.IdentityOrU(predicate, monad) ~&gt; monad</code></a></h6>
 
     <div class="loading-hidden">
       <pre><code class="hljs lang-js">
