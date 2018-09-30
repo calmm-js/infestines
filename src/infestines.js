@@ -32,10 +32,7 @@ export const defineNameU = (() => {
 
 //
 
-const setName =
-  process.env.NODE_ENV === 'production'
-    ? x => x
-    : (to, name) => defineNameU(to, name)
+const setName = process.env.NODE_ENV === 'production' ? x => x : defineNameU
 
 const copyName =
   process.env.NODE_ENV === 'production'
