@@ -1,3 +1,19 @@
+const AP = 'ap'
+const CHAIN = 'chain'
+const MAP = 'map'
+const OF = 'of'
+
+const FANTASY_LAND_SLASH = 'fantasy-land/'
+const FANTASY_LAND_SLASH_OF = FANTASY_LAND_SLASH + OF
+const FANTASY_LAND_SLASH_MAP = FANTASY_LAND_SLASH + MAP
+const FANTASY_LAND_SLASH_AP = FANTASY_LAND_SLASH + AP
+const FANTASY_LAND_SLASH_CHAIN = FANTASY_LAND_SLASH + CHAIN
+
+const CONSTRUCTOR = 'constructor'
+const PROTOTYPE = 'prototype'
+
+//
+
 export const id = x => x
 
 //
@@ -14,6 +30,13 @@ export const defineNameU = (() => {
   }
 })()
 
+//
+
+const setName =
+  process.env.NODE_ENV === 'production'
+    ? x => x
+    : (to, name) => defineNameU(to, name)
+
 const copyName =
   process.env.NODE_ENV === 'production'
     ? f => f
@@ -23,6 +46,8 @@ const withName =
   process.env.NODE_ENV === 'production'
     ? id
     : ary => fn => copyName(ary(fn), fn)
+
+//
 
 const ary1of2 = withName(
   fn =>
@@ -168,6 +193,8 @@ export const curry = f => arityN(f.length, f)
 
 //
 
+export const create = Object.create
+
 export const assign = Object.assign
 
 export const toObject = x => assign({}, x)
@@ -186,6 +213,8 @@ export const sndU = function snd(_, y) {
 
 export const freeze = x => x && Object.freeze(x)
 
+const freezeInDev = process.env.NODE_ENV === 'production' ? id : freeze
+
 export const array0 = freeze([])
 export const object0 = freeze({})
 
@@ -195,8 +224,10 @@ export const isDefined = x => void 0 !== x
 
 //
 
+const hasOwnProperty = Object[PROTOTYPE].hasOwnProperty
+
 export const hasU = function has(p, x) {
-  return Object.prototype.hasOwnProperty.call(x, p)
+  return hasOwnProperty.call(x, p)
 }
 
 //
@@ -204,7 +235,7 @@ export const hasU = function has(p, x) {
 export const prototypeOf = x => (null == x ? x : Object.getPrototypeOf(x))
 
 export const constructorOf = x =>
-  null == x ? x : (hasU('constructor', x) ? prototypeOf(x) : x).constructor
+  null == x ? x : (hasU(CONSTRUCTOR, x) ? prototypeOf(x) : x)[CONSTRUCTOR]
 
 //
 
@@ -218,9 +249,13 @@ const object = prototypeOf({})
 export const isObject = x =>
   null != x &&
   typeof x === 'object' &&
-  (hasU('constructor', x)
-    ? prototypeOf(x) === object
-    : x.constructor === Object)
+  (hasU(CONSTRUCTOR, x) ? prototypeOf(x) === object : x[CONSTRUCTOR] === Object)
+
+//
+
+export const isInstanceOfU = function isInstanceOf(C, x) {
+  return x instanceof C
+}
 
 //
 
@@ -305,7 +340,7 @@ export const unzipObjIntoU = function unzipObjInto(o, ks, vs) {
 }
 
 export function keys(o) {
-  if (o instanceof Object) {
+  if (isInstanceOfU(Object, o)) {
     if (isObject(o)) {
       const ks = []
       unzipObjIntoU(o, ks, 0)
@@ -317,14 +352,14 @@ export function keys(o) {
 }
 
 export function values(o) {
-  if (o instanceof Object) {
+  if (isInstanceOfU(Object, o)) {
     if (isObject(o)) {
       const vs = []
       unzipObjIntoU(o, 0, vs)
       return vs
     } else {
-      const xs = Object.keys(o),
-        n = xs.length
+      const xs = Object.keys(o)
+      const n = xs.length
       for (let i = 0; i < n; ++i) xs[i] = o[xs[i]]
       return xs
     }
@@ -369,7 +404,97 @@ export const dissocPartialU = function dissocPartial(k, o) {
 //
 
 export const inherit = (Derived, Base, protos, statics) =>
-  (assign(
-    (Derived.prototype = Object.create(Base.prototype)),
-    protos
-  ).constructor = assign(Derived, statics))
+  (assign((Derived[PROTOTYPE] = create(Base[PROTOTYPE])), protos)[
+    CONSTRUCTOR
+  ] = assign(Derived, statics))
+
+//
+
+export function Functor(map) {
+  if (!isInstanceOfU(Functor, this)) return freezeInDev(new Functor(map))
+  this[MAP] = map
+}
+
+export const Applicative = inherit(function Applicative(map, of, ap) {
+  if (!isInstanceOfU(Applicative, this))
+    return freezeInDev(new Applicative(map, of, ap))
+  Functor.call(this, map)
+  this[OF] = of
+  this[AP] = ap
+}, Functor)
+
+export const Monad = inherit(function Monad(map, of, ap, chain) {
+  if (!isInstanceOfU(Monad, this))
+    return freezeInDev(new Monad(map, of, ap, chain))
+  Applicative.call(this, map, of, ap)
+  this[CHAIN] = chain
+}, Applicative)
+
+//
+
+export const Identity = Monad(applyU, id, applyU, applyU)
+
+export const IdentityOrU = function IdentityOr(isOther, other) {
+  const map = other[MAP]
+  const ap = other[AP]
+  const of = other[OF]
+  const chain = other[CHAIN]
+  const mapEither = (xy, xM) => (isOther(xM) ? map(xy, xM) : xy(xM))
+  const toOther = x => (isOther(x) ? x : of(x))
+  return Monad(
+    mapEither,
+    id,
+    function apEither(xyM, xM) {
+      return isOther(xyM)
+        ? isOther(xM)
+          ? ap(xyM, xM)
+          : map(xy => xy(xM), xyM)
+        : mapEither(xyM, xM)
+    },
+    function chainEither(xyM, xM) {
+      return isOther(xM) ? chain(x => toOther(xyM(x)), xM) : xyM(xM)
+    }
+  )
+}
+
+//
+
+export const isThenable = xP => null != xP && isFunction(xP.then)
+
+const thenU = function then(xyP, xP) {
+  return xP.then(xyP)
+}
+
+export const resolve = x => Promise.resolve(x)
+
+export const Async = Monad(
+  thenU,
+  resolve,
+  function apAsync(xyP, xP) {
+    return thenU(xy => thenU(xy, xP), xyP)
+  },
+  thenU
+)
+
+export const IdentityAsync = IdentityOrU(isThenable, Async)
+
+//
+
+const fantasyBop = m => setName((f, x) => x[m](f), m)
+const fantasyMap = fantasyBop(FANTASY_LAND_SLASH_MAP)
+const fantasyAp = fantasyBop(FANTASY_LAND_SLASH_AP)
+const fantasyChain = fantasyBop(FANTASY_LAND_SLASH_CHAIN)
+
+export const FantasyFunctor = Functor(fantasyMap)
+
+export const fromFantasyApplicative = Type =>
+  Applicative(fantasyMap, Type[FANTASY_LAND_SLASH_OF], fantasyAp)
+export const fromFantasyMonad = Type =>
+  Monad(fantasyMap, Type[FANTASY_LAND_SLASH_OF], fantasyAp, fantasyChain)
+
+export const fromFantasy = Type =>
+  Type.prototype[FANTASY_LAND_SLASH_CHAIN]
+    ? fromFantasyMonad(Type)
+    : Type[FANTASY_LAND_SLASH_OF]
+      ? fromFantasyApplicative(Type)
+      : FantasyFunctor
