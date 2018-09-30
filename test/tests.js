@@ -286,7 +286,7 @@ describe('inherit', () => {
     }
     I.inherit(
       Base,
-      Object,
+      null,
       {
         Foo() {
           return this.Bar() + this._foo

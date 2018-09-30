@@ -404,7 +404,7 @@ export const dissocPartialU = function dissocPartial(k, o) {
 //
 
 export const inherit = (Derived, Base, protos, statics) =>
-  (assign((Derived[PROTOTYPE] = create(Base[PROTOTYPE])), protos)[
+  (assign((Derived[PROTOTYPE] = create(Base && Base[PROTOTYPE])), protos)[
     CONSTRUCTOR
   ] = assign(Derived, statics))
 
