@@ -184,9 +184,23 @@ const C = [
   [void 0, ary1of4, ary2of4, ary3of4, ary4of4]
 ]
 
-export const curryN = (n, f) => C[n][Math.min(n, f.length)](f)
-export const arityN = (n, f) => C[n][n](f)
+export const curryNU = function curryN(n, f) {
+  return C[n][Math.min(n, f.length)](f)
+}
+
+export const curryN = ary2of2(curryNU)
+
+export const arityNU = function arityN(n, f) {
+  return C[n][n](f)
+}
+
+export const arityN = ary2of2(arityNU)
+
 export const curry = f => arityN(f.length, f)
+
+//
+
+export const defineName = ary2of2(defineNameU)
 
 //
 
@@ -198,13 +212,25 @@ export const toObject = x => assign({}, x)
 
 //
 
-export const always = x => _ => x
+export const always = ary1of2(function always(x) {
+  return function always(_) {
+    return x
+  }
+})
+
 export const applyU = function apply(x2y, x) {
   return x2y(x)
 }
+
+export const apply = ary2of2(applyU)
+
 export const sndU = function snd(_, y) {
   return y
 }
+
+export const snd = ary1of2(function snd() {
+  return id
+})
 
 //
 
@@ -226,6 +252,8 @@ const hasOwnProperty = Object[PROTOTYPE].hasOwnProperty
 export const hasU = function has(p, x) {
   return hasOwnProperty.call(x, p)
 }
+
+export const has = ary2of2(hasU)
 
 //
 
@@ -254,6 +282,8 @@ export const isInstanceOfU = function isInstanceOf(C, x) {
   return x instanceof C
 }
 
+export const isInstanceOf = ary2of2(isInstanceOfU)
+
 //
 
 export const pipe2U = function pipe2(fn1, fn2) {
@@ -261,9 +291,13 @@ export const pipe2U = function pipe2(fn1, fn2) {
   return n === 1 ? x => fn2(fn1(x)) : arityN(n, (...xs) => fn2(fn1(...xs)))
 }
 
+export const pipe2 = ary2of2(pipe2U)
+
 export const compose2U = function compose2(fn1, fn2) {
   return pipe2U(fn2, fn1)
 }
+
+export const compose2 = ary2of2(compose2U)
 
 //
 
@@ -283,6 +317,8 @@ export const identicalU = function identical(a, b) {
   return (a === b && (a !== 0 || 1 / a === 1 / b)) || (a !== a && b !== b)
 }
 
+export const identical = ary2of2(identicalU)
+
 //
 
 export const whereEqU = function whereEq(t, o) {
@@ -294,6 +330,8 @@ export const whereEqU = function whereEq(t, o) {
   return true
 }
 
+export const whereEq = ary2of2(whereEqU)
+
 //
 
 export const hasKeysOfU = function hasKeysOf(t, o) {
@@ -301,11 +339,13 @@ export const hasKeysOfU = function hasKeysOf(t, o) {
   return true
 }
 
+export const hasKeysOf = ary2of2(hasKeysOfU)
+
 //
 
-export const acyclicEqualsObject = (a, b) => whereEqU(a, b) && hasKeysOfU(b, a)
+const acyclicEqualsObjectU = (a, b) => whereEqU(a, b) && hasKeysOfU(b, a)
 
-function acyclicEqualsArray(a, b) {
+function acyclicEqualsArrayU(a, b) {
   const n = a.length
   if (n !== b.length) return false
   for (let i = 0; i < n; ++i) if (!acyclicEqualsU(a[i], b[i])) return false
@@ -319,13 +359,15 @@ export const acyclicEqualsU = function acyclicEquals(a, b) {
   if (c !== constructorOf(b)) return false
   switch (c) {
     case Array:
-      return acyclicEqualsArray(a, b)
+      return acyclicEqualsArrayU(a, b)
     case Object:
-      return acyclicEqualsObject(a, b)
+      return acyclicEqualsObjectU(a, b)
     default:
       return isFunction(a.equals) && a.equals(b)
   }
 }
+
+export const acyclicEquals = ary2of2(acyclicEqualsU)
 
 //
 
@@ -335,6 +377,8 @@ export const unzipObjIntoU = function unzipObjInto(o, ks, vs) {
     if (vs) vs.push(o[k])
   }
 }
+
+export const unzipObjInto = ary3of3(unzipObjIntoU)
 
 export function keys(o) {
   if (isInstanceOfU(Object, o)) {
@@ -382,6 +426,8 @@ export const assocPartialU = function assocPartial(k, v, o) {
   return r
 }
 
+export const assocPartial = ary3of3(assocPartialU)
+
 export const dissocPartialU = function dissocPartial(k, o) {
   let r
   if (o instanceof Object) {
@@ -397,6 +443,8 @@ export const dissocPartialU = function dissocPartial(k, o) {
   }
   return r
 }
+
+export const dissocPartial = ary2of2(dissocPartialU)
 
 //
 
@@ -453,6 +501,8 @@ export const IdentityOrU = function IdentityOr(isOther, other) {
     }
   )
 }
+
+export const IdentityOr = ary2of2(IdentityOrU)
 
 //
 

@@ -109,12 +109,12 @@ describe('id', () => {
 })
 
 describe('pipe and compose', () => {
-  testEq(() => I.pipe2U(R.inc, R.negate)(1), -2)
-  testEq(() => I.compose2U(R.inc, R.negate)(1), 0)
-  testEq(() => I.pipe2U((a, b) => a + b, x => x + 1)(1, 2), 4)
-  testEq(() => I.pipe2U((a, b) => a + b, x => x + 1).length, 2)
-  testEq(() => I.compose2U(x => x + 1, (a, b) => a + b)(1, 2), 4)
-  testEq(() => I.compose2U(x => x + 1, (a, b) => a + b).length, 2)
+  testEq(() => I.pipe2(R.inc, R.negate)(1), -2)
+  testEq(() => I.compose2(R.inc, R.negate)(1), 0)
+  testEq(() => I.pipe2((a, b) => a + b, x => x + 1)(1, 2), 4)
+  testEq(() => I.pipe2((a, b) => a + b, x => x + 1).length, 2)
+  testEq(() => I.compose2(x => x + 1, (a, b) => a + b)(1, 2), 4)
+  testEq(() => I.compose2(x => x + 1, (a, b) => a + b).length, 2)
 })
 
 describe('seq', () => {
@@ -172,23 +172,23 @@ export class Foo {
   }
 }
 
-describe('identicalU', () => {
-  testEq(() => I.identicalU(null, null), true)
-  testEq(() => I.identicalU(-0, +0), false)
-  testEq(() => I.identicalU(NaN, NaN), true)
-  testEq(() => I.identicalU({}, {}), false)
+describe('identical', () => {
+  testEq(() => I.identical(null, null), true)
+  testEq(() => I.identical(-0, +0), false)
+  testEq(() => I.identical(NaN, NaN), true)
+  testEq(() => I.identical({}, {}), false)
 })
 
-describe('acyclicEqualsU', () => {
-  testEq(() => I.acyclicEqualsU(null, {}), false)
-  testEq(() => I.acyclicEqualsU({a: 1}, {a: 1, b: 2}), false)
-  testEq(() => I.acyclicEqualsU([1, 2], [1]), false)
-  testEq(() => I.acyclicEqualsU([1, 2], [1, 3]), false)
-  testEq(() => I.acyclicEqualsU({a: 1, b: [true]}, {b: [true], a: 1}), true)
-  testEq(() => I.acyclicEqualsU({a: 1, b: [true]}, {b: [true]}), false)
-  testEq(() => I.acyclicEqualsU([], {}), false)
-  testEq(() => I.acyclicEqualsU(new Foo(1), new Foo(1)), true)
-  testEq(() => I.acyclicEqualsU(new Foo(2), new Foo(1)), false)
+describe('acyclicEquals', () => {
+  testEq(() => I.acyclicEquals(null, {}), false)
+  testEq(() => I.acyclicEquals({a: 1}, {a: 1, b: 2}), false)
+  testEq(() => I.acyclicEquals([1, 2], [1]), false)
+  testEq(() => I.acyclicEquals([1, 2], [1, 3]), false)
+  testEq(() => I.acyclicEquals({a: 1, b: [true]}, {b: [true], a: 1}), true)
+  testEq(() => I.acyclicEquals({a: 1, b: [true]}, {b: [true]}), false)
+  testEq(() => I.acyclicEquals([], {}), false)
+  testEq(() => I.acyclicEquals(new Foo(1), new Foo(1)), true)
+  testEq(() => I.acyclicEquals(new Foo(2), new Foo(1)), false)
 })
 
 function XYZ(x, y, z) {
@@ -214,12 +214,12 @@ describe('values', () => {
   testEq(() => I.values(new XYZ(3, 1, 4)), [3, 1, 4])
 })
 
-describe('unzipObjIntoU', () => {
+describe('unzipObjInto', () => {
   testEq(
     () => {
       const ks = [],
         vs = []
-      I.unzipObjIntoU({x: 1, y: 2}, ks, vs)
+      I.unzipObjInto({x: 1, y: 2}, ks, vs)
       return [ks, vs]
     },
     [['x', 'y'], [1, 2]]
@@ -227,28 +227,28 @@ describe('unzipObjIntoU', () => {
   testEq(
     () => {
       const kvs = []
-      I.unzipObjIntoU({x: 1, y: 2}, kvs, kvs)
+      I.unzipObjInto({x: 1, y: 2}, kvs, kvs)
       return kvs
     },
     ['x', 1, 'y', 2]
   )
 })
 
-describe('assocPartialU', () => {
-  testEq(() => I.assocPartialU('x', 1, null), {x: 1})
-  testEq(() => I.assocPartialU('x', 1, undefined), {x: 1})
-  testEq(() => I.assocPartialU('x', 2, {x: 1}), {x: 2})
-  testEq(() => I.assocPartialU('x', 2, {z: 1}), {z: 1, x: 2})
-  testEq(() => I.assocPartialU('x', -1, new XYZ(3, 1, 4)), {x: -1, y: 1, z: 4})
+describe('assocPartial', () => {
+  testEq(() => I.assocPartial('x', 1, null), {x: 1})
+  testEq(() => I.assocPartial('x', 1, undefined), {x: 1})
+  testEq(() => I.assocPartial('x', 2, {x: 1}), {x: 2})
+  testEq(() => I.assocPartial('x', 2, {z: 1}), {z: 1, x: 2})
+  testEq(() => I.assocPartial('x', -1, new XYZ(3, 1, 4)), {x: -1, y: 1, z: 4})
 })
 
-describe('dissocPartialU', () => {
-  testEq(() => I.dissocPartialU('x', null), undefined)
-  testEq(() => I.dissocPartialU('x', undefined), undefined)
-  testEq(() => I.dissocPartialU('x', {}), undefined)
-  testEq(() => I.dissocPartialU('x', {x: 1}), undefined)
-  testEq(() => I.dissocPartialU('x', {x: 1, y: 2}), {y: 2})
-  testEq(() => I.dissocPartialU('y', new XYZ(3, 1, 4)), {x: 3, z: 4})
+describe('dissocPartial', () => {
+  testEq(() => I.dissocPartial('x', null), undefined)
+  testEq(() => I.dissocPartial('x', undefined), undefined)
+  testEq(() => I.dissocPartial('x', {}), undefined)
+  testEq(() => I.dissocPartial('x', {x: 1}), undefined)
+  testEq(() => I.dissocPartial('x', {x: 1, y: 2}), {y: 2})
+  testEq(() => I.dissocPartial('y', new XYZ(3, 1, 4)), {x: 3, z: 4})
 })
 
 describe('isDefined', () => {
@@ -259,24 +259,25 @@ describe('isDefined', () => {
 })
 
 describe('always', () => {
-  testEq(() => I.always.length, 1)
+  testEq(() => I.always.length, 2)
   testEq(() => I.always(2).length, 1)
   testEq(() => I.always(1)(0), 1)
 })
 
-describe('applyU', () => {
-  testEq(() => I.applyU(x => x + 1, 2), 3)
+describe('apply', () => {
+  testEq(() => I.apply(x => x + 1, 2), 3)
 })
 
-describe('sndU', () => {
+describe('snd', () => {
+  testEq(() => I.snd('a')('b'), 'b')
   testEq(() => I.sndU('a', 'b'), 'b')
 })
 
-describe('hasU', () => {
-  testEq(() => I.hasU('constructor', {}), false)
-  testEq(() => I.hasU('length', []), true)
-  testEq(() => I.hasU('x', {x: 0}), true)
-  testEq(() => I.hasU('y', {x: 0}), false)
+describe('has', () => {
+  testEq(() => I.has('constructor', {}), false)
+  testEq(() => I.has('length', []), true)
+  testEq(() => I.has('x', {x: 0}), true)
+  testEq(() => I.has('y', {x: 0}), false)
 })
 
 describe('inherit', () => {
