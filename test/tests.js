@@ -15,11 +15,9 @@ const showExpr = expr =>
   R.is(Function, expr)
     ? expr
         .toString()
+        .replace(/^\(\) => /, '')
         .replace(/\s+/g, ' ')
-        .replace(/^\s*function\s*\(\s*\)\s*{\s*(return\s*)?/, '')
-        .replace(/\s*;?\s*}\s*$/, '')
-        .replace(/function\s*(\([a-zA-Z]*\))\s*/g, '$1 => ')
-        .replace(/{\s*return\s*([^{;]+)\s*;\s*}/g, '$1')
+        .replace(/;\s*}/g, ' }')
     : expr
 const runExpr = expr =>
   R.is(Function, expr) ? expr() : eval(`() => ${expr}`)()
