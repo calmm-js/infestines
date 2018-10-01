@@ -12,36 +12,37 @@ function show(x) {
 }
 
 const showExpr = expr =>
-  R.is(Function, expr)
-    ? expr
-        .toString()
-        .replace(/^\(\) => /, '')
-        .replace(/\s+/g, ' ')
-        .replace(/;\s*}/g, ' }')
+  I.isFunction(expr)
+    ? I.seq(
+        expr,
+        I.toString,
+        I.replace(/^\(\) => /, ''),
+        I.replace(/\s+/g, ' '),
+        I.replace(/;\s*}/g, ' }')
+      )
     : expr
-const runExpr = expr =>
-  R.is(Function, expr) ? expr() : eval(`() => ${expr}`)()
+const runExpr = expr => (I.isFunction(expr) ? expr() : eval(`() => ${expr}`)())
 
 const testEq = (expr, expect) =>
-  it(`${showExpr(expr)} => ${show(expect)}`, done => {
-    const actual = runExpr(expr)
+  it(`${showExpr(expr)} => ${show(expect)}`, async () => {
+    const actual = await runExpr(expr)
     function check(actual) {
       if (!R.equals(actual, expect))
-        done(Error(`Expected: ${show(expect)}, actual: ${show(actual)}`))
-      else done()
+        throw Error(`Expected: ${show(expect)}, actual: ${show(actual)}`)
     }
     if (I.isThenable(actual)) actual.then(check, check)
     else check(actual)
   })
 
 const expectFail = expr =>
-  it(`${showExpr(expr)} => failure`, () => {
+  it(`${showExpr(expr)} => failure`, async () => {
+    let actual
     try {
-      const actual = runExpr(expr)
-      throw new Error(`Expected: failure, actual: ${show(actual)}`)
+      actual = await runExpr(expr)
     } catch (_e) {
       return
     }
+    throw new Error(`Expected: failure, actual: ${show(actual)}`)
   })
 
 function forAll(fn, x, n, cb) {
@@ -53,7 +54,7 @@ function forAll(fn, x, n, cb) {
 }
 
 function forAllFns(n, cb) {
-  const args = R.map(i => `x${i}`, R.range(0, n))
+  const args = R.times(i => `x${i}`, n)
   forAll((i, m, body) => `(${args.slice(i, m)}) => ${body}`, `[${args}]`, n, cb)
 }
 
@@ -82,7 +83,8 @@ describe('currying', () => {
   testEq(() => I.curry((a, b, c, d) => a + b + c + d)(1, 2, 3)(4), 10)
   testEq(() => I.curry((a, b, c, d) => a + b + c + d)(1)(2, 3, 4), 10)
 
-  expectFail(() => I.curry(() => {}))
+  testEq(() => I.curry(I.args)('a'), [])
+  testEq(() => I.arityN(1, I.args)('a', 'b'), ['a'])
   expectFail(() => I.curry((_a, _b, _c, _d, _e) => {}))
 })
 
@@ -103,18 +105,50 @@ describe('arity', () => {
   testEq(() => I.arityN(1, (_x, _y) => 42)(), 42)
 })
 
+describe('prop', () => {
+  testEq(() => I.prop('any', null), undefined)
+  testEq(() => I.prop('any', undefined), undefined)
+  testEq(() => I.prop('any', {any: 101}), 101)
+  testEq(() => I.prop('length', ['a']), 1)
+})
+
 describe('id', () => {
   testEq(() => I.id.length, 1)
   testEq(() => I.id('anything'), 'anything')
 })
 
 describe('pipe and compose', () => {
-  testEq(() => I.pipe2(R.inc, R.negate)(1), -2)
-  testEq(() => I.compose2(R.inc, R.negate)(1), 0)
-  testEq(() => I.pipe2((a, b) => a + b, x => x + 1)(1, 2), 4)
+  testEq(() => I.pipe2(R.inc, I.negate)(1), -2)
+  testEq(() => I.compose2(R.inc, I.negate)(1), 0)
+  testEq(() => I.pipe2((a, b) => a + b, I.subtractBy(-1))(1, 2), 4)
   testEq(() => I.pipe2((a, b) => a + b, x => x + 1).length, 2)
-  testEq(() => I.compose2(x => x + 1, (a, b) => a + b)(1, 2), 4)
+  testEq(() => I.compose2(I.add(1), I.add)(1, 2), 4)
   testEq(() => I.compose2(x => x + 1, (a, b) => a + b).length, 2)
+})
+
+describe('uncurried', () => {
+  testEq(() => I.addU(1, 2), 3)
+  testEq(() => I.multiplyU(2, 3), 6)
+
+  testEq(() => I.greaterU(1, 2), false)
+  testEq(() => I.greaterEqU(1, 2), false)
+  testEq(() => I.lessU(1, 2), true)
+  testEq(() => I.lessEqU(1, 2), true)
+})
+
+describe('sort', () => {
+  testEq(
+    () =>
+      I.sort(I.ordering(I.ascBy(I.prop(0)), I.descBy(I.prop(1))), [
+        [2, 3],
+        [6, 1],
+        [5, 4],
+        [3, 1],
+        [5, 5],
+        [8, 9]
+      ]),
+    [[2, 3], [3, 1], [5, 5], [5, 4], [6, 1], [8, 9]]
+  )
 })
 
 describe('seq', () => {
@@ -191,14 +225,19 @@ describe('acyclicEquals', () => {
   testEq(() => I.acyclicEquals(new Foo(2), new Foo(1)), false)
 })
 
-function XYZ(x, y, z) {
-  this.x = x
-  this.y = y
-  this.z = z
-}
-XYZ.prototype.sum = function() {
-  return this.x + this.y + this.z
-}
+const XYZ = I.inherit(
+  function XYZ(x, y, z) {
+    this.x = x
+    this.y = y
+    this.z = z
+  },
+  Object,
+  {
+    sum() {
+      return this.x + this.y + this.z
+    }
+  }
+)
 
 describe('keys', () => {
   testEq(() => I.keys(null), undefined)
@@ -253,9 +292,39 @@ describe('dissocPartial', () => {
 
 describe('isDefined', () => {
   testEq(() => I.isDefined(undefined), false)
-  testEq(() => I.isDefined(0 / 0), true)
+  testEq(() => I.isDefined(I.divide(0, 0)), true)
   testEq(() => I.isDefined(null), true)
   testEq(() => I.isDefined('anything except undefined'), true)
+})
+
+describe('isUndefined', () => {
+  testEq(() => I.isUndefined(undefined), true)
+  testEq(() => I.isUndefined(I.divideBy(0, 0)), false)
+  testEq(() => I.isUndefined(null), false)
+  testEq(() => I.isUndefined('anything except undefined'), false)
+})
+
+describe('isNil', () => {
+  testEq(() => I.isNil(undefined), true)
+  testEq(() => I.isNil(0 / 0), false)
+  testEq(() => I.isNil(null), true)
+  testEq(() => I.isNil('anything except null or undefined'), false)
+})
+
+describe('isBoolean', () => {
+  testEq(() => I.isBoolean(true), true)
+  testEq(() => I.isBoolean(I.not(true)), true)
+  testEq(() => I.isBoolean(0 / 0), false)
+  testEq(() => I.isBoolean(null), false)
+  testEq(() => I.isBoolean('anything except null or undefined'), false)
+})
+
+describe('ignore', () => {
+  testEq(() => I.ignore('anything'), undefined)
+})
+
+describe('scope', () => {
+  testEq(() => I.scope((a = 3, b = 2) => I.multiply(a, b)), 6)
 })
 
 describe('always', () => {
@@ -264,8 +333,12 @@ describe('always', () => {
   testEq(() => I.always(1)(0), 1)
 })
 
+describe('ap', () => {
+  testEq(() => I.ap(I.subtract(1), 2), -1)
+})
+
 describe('apply', () => {
-  testEq(() => I.apply(x => x + 1, 2), 3)
+  testEq(() => I.apply(Math.min, [3, 1, 4]), 1)
 })
 
 describe('snd', () => {
@@ -273,11 +346,45 @@ describe('snd', () => {
   testEq(() => I.sndU('a', 'b'), 'b')
 })
 
+describe('toString', () => {
+  testEq(() => I.toString(null), 'null')
+  testEq(() => I.toString(undefined), 'undefined')
+  testEq(() => I.toString({}), '[object Object]')
+  testEq(() => I.toString('a string'), 'a string')
+})
+
 describe('has', () => {
   testEq(() => I.has('constructor', {}), false)
   testEq(() => I.has('length', []), true)
   testEq(() => I.has('x', {x: 0}), true)
   testEq(() => I.has('y', {x: 0}), false)
+})
+
+describe('comparisons', () => {
+  testEq(() => I.less(1, 2), true)
+  testEq(() => I.less('a', 'a'), false)
+  testEq(() => I.lessEq('b', 'a'), false)
+  testEq(() => I.lessEq('b', 'b'), true)
+  testEq(() => I.greater(1, 2), false)
+  testEq(() => I.greater('2', '1'), true)
+  testEq(() => I.greaterEq(1, 2), false)
+  testEq(() => I.greaterEq(2, 2), true)
+})
+
+describe('curried methods', () => {
+  testEq(() => I.replace(/a/g, 'b', 'abba'), 'bbbb')
+  testEq(() => I.repeat(4, 'a'), 'aaaa')
+  testEq(() => I.toLowerCase('AB'), 'ab')
+  testEq(() => I.toUpperCase('ba'), 'BA')
+  testEq(() => I.test(/ob/)('foobar'), true)
+  testEq(() => I.filter(I.isNil)([1, null, 2]), [null])
+  testEq(() => I.map(I.add(1))([2, 0]), [3, 1])
+  testEq(() => I.join(', ')([1, 2]), '1, 2')
+  testEq(() => I.reduceRight((s, x) => [s, x])(null)([1, 2, 3]), [
+    [[null, 3], 2],
+    1
+  ])
+  testEq(() => I.reduce((s, x) => [s, x])(null)([1, 2, 3]), [[[null, 1], 2], 3])
 })
 
 describe('inherit', () => {
@@ -307,6 +414,10 @@ describe('inherit', () => {
     })
     return new Derived(5).Foo()
   }, 26)
+})
+
+describe('reject', () => {
+  expectFail(() => I.reject(Error('bye')))
 })
 
 const traverse = ({map, of, ap}, f, o) => {
@@ -382,14 +493,14 @@ describe('fantasy interop', () => {
     () =>
       traverse(
         I.IdentityOrU(x => x instanceof Some, I.fromFantasy(MaybeApplicative)),
-        R.identity,
+        I.id,
         [new Some(3), 1, new Some(4)]
       ),
     new Some([3, 1, 4])
   )
   testEq(
     () =>
-      traverse(I.fromFantasy(MaybeApplicative), R.identity, [
+      traverse(I.fromFantasy(MaybeApplicative), I.id, [
         new Some(3),
         new None(),
         new Some(4)
@@ -398,7 +509,7 @@ describe('fantasy interop', () => {
   )
   testEq(
     () =>
-      traverse(I.fromFantasy(MaybeMonad), R.identity, [
+      traverse(I.fromFantasy(MaybeMonad), I.id, [
         new Some(3),
         new Some(1),
         new Some(4)
