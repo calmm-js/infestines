@@ -64,7 +64,7 @@ const ary2of2 = withName(
 const ary1of3 = withName(
   fn =>
     function(x0, x1, x2) {
-      const fnx0 = curryN(2, fn(x0))
+      const fnx0 = curryNU(2, fn(x0))
       const n = arguments.length
       return n < 3 ? (n < 2 ? fnx0 : fnx0(x1)) : fnx0(x1, x2)
     }
@@ -95,7 +95,7 @@ const ary3of3 = withName(
 const ary1of4 = withName(
   fn =>
     function(x0, x1, x2, x3) {
-      const fnx0 = curryN(3, fn(x0))
+      const fnx0 = curryNU(3, fn(x0))
       const n = arguments.length
       return n < 3
         ? n < 2
@@ -112,7 +112,7 @@ const ary2of4 = withName(
     function(x0, x1, x2, x3) {
       const n = arguments.length
       if (n < 2) return ary1of3(copyName(x1 => fn(x0, x1), fn))
-      const fnx0x1 = curryN(2, fn(x0, x1))
+      const fnx0x1 = curryNU(2, fn(x0, x1))
       return n < 4 ? (n < 3 ? fnx0x1 : fnx0x1(x2)) : fnx0x1(x2, x3)
     }
 )
