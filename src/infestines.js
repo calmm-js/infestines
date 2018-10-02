@@ -65,45 +65,30 @@ const ary1of3 = withName(
   fn =>
     function(x0, x1, x2) {
       const fnx0 = curryN(2, fn(x0))
-      switch (arguments.length) {
-        case 0:
-        case 1:
-          return fnx0
-        case 2:
-          return fnx0(x1)
-        default:
-          return fnx0(x1, x2)
-      }
+      const n = arguments.length
+      return n < 3 ? (n < 2 ? fnx0 : fnx0(x1)) : fnx0(x1, x2)
     }
 )
 
 const ary2of3 = withName(
   fn =>
     function(x0, x1, x2) {
-      switch (arguments.length) {
-        case 0:
-        case 1:
-          return ary1of2(copyName(x1 => fn(x0, x1), fn))
-        case 2:
-          return fn(x0, x1)
-        default:
-          return fn(x0, x1)(x2)
-      }
+      const n = arguments.length
+      if (n < 2) return ary1of2(copyName(x1 => fn(x0, x1), fn))
+      const fnx0x1 = fn(x0, x1)
+      return n < 3 ? fnx0x1 : fnx0x1(x2)
     }
 )
 
 const ary3of3 = withName(
   fn =>
     function(x0, x1, x2) {
-      switch (arguments.length) {
-        case 0:
-        case 1:
-          return ary2of2(copyName((x1, x2) => fn(x0, x1, x2), fn))
-        case 2:
-          return copyName(x2 => fn(x0, x1, x2), fn)
-        default:
-          return fn(x0, x1, x2)
-      }
+      const n = arguments.length
+      return n < 3
+        ? n < 2
+          ? ary2of2(copyName((x1, x2) => fn(x0, x1, x2), fn))
+          : copyName(x2 => fn(x0, x1, x2), fn)
+        : fn(x0, x1, x2)
     }
 )
 
@@ -111,68 +96,52 @@ const ary1of4 = withName(
   fn =>
     function(x0, x1, x2, x3) {
       const fnx0 = curryN(3, fn(x0))
-      switch (arguments.length) {
-        case 0:
-        case 1:
-          return fnx0
-        case 2:
-          return fnx0(x1)
-        case 3:
-          return fnx0(x1, x2)
-        default:
-          return fnx0(x1, x2, x3)
-      }
+      const n = arguments.length
+      return n < 3
+        ? n < 2
+          ? fnx0
+          : fnx0(x1)
+        : n < 4
+          ? fnx0(x1, x2)
+          : fnx0(x1, x2, x3)
     }
 )
 
 const ary2of4 = withName(
   fn =>
     function(x0, x1, x2, x3) {
-      switch (arguments.length) {
-        case 0:
-        case 1:
-          return ary1of3(copyName(x1 => fn(x0, x1), fn))
-        case 2:
-          return curryN(2, fn(x0, x1))
-        case 3:
-          return curryN(2, fn(x0, x1))(x2)
-        default:
-          return curryN(2, fn(x0, x1))(x2, x3)
-      }
+      const n = arguments.length
+      if (n < 2) return ary1of3(copyName(x1 => fn(x0, x1), fn))
+      const fnx0x1 = curryN(2, fn(x0, x1))
+      return n < 4 ? (n < 3 ? fnx0x1 : fnx0x1(x2)) : fnx0x1(x2, x3)
     }
 )
 
 const ary3of4 = withName(
   fn =>
     function(x0, x1, x2, x3) {
-      switch (arguments.length) {
-        case 0:
-        case 1:
-          return ary2of3(copyName((x1, x2) => fn(x0, x1, x2), fn))
-        case 2:
-          return ary1of2(copyName(x2 => fn(x0, x1, x2), fn))
-        case 3:
-          return fn(x0, x1, x2)
-        default:
-          return fn(x0, x1, x2)(x3)
-      }
+      const n = arguments.length
+      return n < 3
+        ? n < 2
+          ? ary2of3(copyName((x1, x2) => fn(x0, x1, x2), fn))
+          : ary1of2(copyName(x2 => fn(x0, x1, x2), fn))
+        : n < 4
+          ? fn(x0, x1, x2)
+          : fn(x0, x1, x2)(x3)
     }
 )
 
 const ary4of4 = withName(
   fn =>
     function(x0, x1, x2, x3) {
-      switch (arguments.length) {
-        case 0:
-        case 1:
-          return ary3of3(copyName((x1, x2, x3) => fn(x0, x1, x2, x3), fn))
-        case 2:
-          return ary2of2(copyName((x2, x3) => fn(x0, x1, x2, x3), fn))
-        case 3:
-          return copyName(x3 => fn(x0, x1, x2, x3), fn)
-        default:
-          return fn(x0, x1, x2, x3)
-      }
+      const n = arguments.length
+      return n < 3
+        ? n < 2
+          ? ary3of3(copyName((x1, x2, x3) => fn(x0, x1, x2, x3), fn))
+          : ary2of2(copyName((x2, x3) => fn(x0, x1, x2, x3), fn))
+        : n < 4
+          ? copyName(x3 => fn(x0, x1, x2, x3), fn)
+          : fn(x0, x1, x2, x3)
     }
 )
 
