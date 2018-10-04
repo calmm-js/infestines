@@ -380,11 +380,11 @@ describe('fantasy interop', () => {
   )
   testEq(
     () =>
-      traverse(I.fromFantasy(MaybeApplicative), R.identity, [
-        new Some(3),
-        new Some(1),
-        new Some(4)
-      ]),
+      traverse(
+        I.IdentityOrU(x => x instanceof Some, I.fromFantasy(MaybeApplicative)),
+        R.identity,
+        [new Some(3), 1, new Some(4)]
+      ),
     new Some([3, 1, 4])
   )
   testEq(

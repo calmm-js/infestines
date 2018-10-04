@@ -82,7 +82,7 @@ are not provided.
       * [`I.Identity ~> monad`](#I-Identity)
       * [`I.IdentityAsync ~> monadish`](#I-IdentityAsync)
     * [Algebra combinators](#algebra-combinators)
-      * [`I.IdentityOr(predicate, monad) ~> monad`](#I-IdentityOr)
+      * [`I.IdentityOr(predicate, applicative|monad) ~> applicative|monad`](#I-IdentityOr)
 
 ## <a id="reference"></a> [≡](#contents) [▶](https://polytypic.github.io/infestines/index.html#reference) [Reference](#reference)
 
@@ -199,4 +199,4 @@ empty
 ###### <a id="I-IdentityAsync"></a> [≡](#contents) [▶](https://polytypic.github.io/infestines/index.html#I-IdentityAsync) [`I.IdentityAsync ~> monadish`](#I-IdentityAsync)
 
 ##### <a id="algebra-combinators"></a> [≡](#contents) [▶](https://polytypic.github.io/infestines/index.html#algebra-combinators) [Algebra combinators](#algebra-combinators)
-###### <a id="I-IdentityOr"></a> [≡](#contents) [▶](https://polytypic.github.io/infestines/index.html#I-IdentityOr) [`I.IdentityOr(predicate, monad) ~> monad`](#I-IdentityOr)
+###### <a id="I-IdentityOr"></a> [≡](#contents) [▶](https://polytypic.github.io/infestines/index.html#I-IdentityOr) [`I.IdentityOr(predicate, applicative|monad) ~> applicative|monad`](#I-IdentityOr)
