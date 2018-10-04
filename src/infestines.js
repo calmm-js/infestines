@@ -455,23 +455,22 @@ export const IdentityOrU = function IdentityOr(isOther, other) {
   const map = other[MAP]
   const ap = other[AP]
   const of = other[OF]
-  const chain = other[CHAIN]
   const mapEither = (xy, xM) => (isOther(xM) ? map(xy, xM) : xy(xM))
-  const toOther = x => (isOther(x) ? x : of(x))
-  return Monad(
-    mapEither,
-    id,
-    function apEither(xyM, xM) {
-      return isOther(xyM)
-        ? isOther(xM)
-          ? ap(xyM, xM)
-          : map(xy => xy(xM), xyM)
-        : mapEither(xyM, xM)
-    },
-    function chainEither(xyM, xM) {
+  const apEither = (xyM, xM) =>
+    isOther(xyM)
+      ? isOther(xM)
+        ? ap(xyM, xM)
+        : map(xy => xy(xM), xyM)
+      : mapEither(xyM, xM)
+  const chain = other[CHAIN]
+  if (chain) {
+    const toOther = x => (isOther(x) ? x : of(x))
+    return Monad(mapEither, id, apEither, function chainEither(xyM, xM) {
       return isOther(xM) ? chain(x => toOther(xyM(x)), xM) : xyM(xM)
-    }
-  )
+    })
+  } else {
+    return Applicative(mapEither, id, apEither)
+  }
 }
 
 export const IdentityOr = ary2of2(IdentityOrU)
