@@ -6,6 +6,7 @@ const sprintf = require('sprintf-js').sprintf
 
 const addU = (x, y) => x + y
 const addN = I.curry(addU)
+const addS = I.curryN(2, x => y => x + y)
 const addR = R.curry(addU)
 
 const acyclicEquals = I.curry(I.acyclicEqualsU)
@@ -25,12 +26,15 @@ const vs1000 = Array(1000).fill(1)
 const inc = x => x + 1
 const inc2 = x => inc(inc(x))
 const inc2I = I.pipe2U(inc, inc)
-const inc2R = R.pipe(inc, inc)
+const inc2R = R.pipe(
+  inc,
+  inc
+)
 
 const Benchmark = require('benchmark')
 Benchmark.options.maxTime = Number(process.argv[2]) || Benchmark.options.maxTime
 
-R.forEach(
+I.forEach(
   bs => {
     global.gc()
     const s = new Benchmark.Suite()
@@ -55,8 +59,8 @@ R.forEach(
       'I.assocPartialU("_", -1, xyz)'
     ],
     [`addU(1, 2)`],
-    [`R.add(1, 2)`, `addN(1, 2)`, `addR(1, 2)`],
-    [`R.add(1)(2)`, `addN(1)(2)`, `addR(1)(2)`],
+    [`R.add(1, 2)`, `I.add(1, 2)`, `addN(1, 2)`, `addS(1, 2)`, `addR(1, 2)`],
+    [`R.add(1)(2)`, `I.add(1)(2)`, `addN(1)(2)`, `addS(1)(2)`, `addR(1)(2)`],
     [`I.isObject(d1)`, `I.isObject(null)`, `I.isObject(5)`, `I.isObject(vs)`],
     [`I.isArray(d1)`, `I.isArray(null)`, `I.isArray(5)`, `I.isArray(vs)`],
     [`Array.isArray(d1)`, `Array.isArray(null)`, `Array.isArray(vs)`],
@@ -70,7 +74,7 @@ R.forEach(
     ],
     [`I.whereEqU(d1, d2)`, `whereEq(d1, d2)`, `R.whereEq(d1, d2)`],
     [`I.keys(d1)`, `Object.keys(d1)`, `R.keys(d1)`],
-    [`I.values(d1)`, `R.values(d1)`],
+    [`I.values(d1)`, `Object.values(d1)`, `R.values(d1)`],
     [
       `I.seq(0, inc)`,
       `I.seq(0, inc, inc)`,
@@ -90,13 +94,12 @@ R.forEach(
 function complete() {
   const bs = I.seq(
     this,
-    R.values,
-    R.filter(R.is(Benchmark)),
-    R.sortBy(R.prop('hz')),
-    R.reverse
+    I.values,
+    I.filter(I.isInstanceOf(Benchmark)),
+    I.sort(I.descBy(I.prop('hz')))
   )
-  const fastest = I.seq(bs, R.map(R.prop('hz')), R.reduce(R.max, 0))
-  bs.forEach(b => {
+  const fastest = Math.max(...I.map(I.prop('hz'), bs))
+  I.forEach(b => {
     console.log(
       sprintf(
         '%12s/s %7.2fx  %s',
@@ -105,6 +108,6 @@ function complete() {
         b.name
       )
     )
-  })
+  }, bs)
   console.log()
 }

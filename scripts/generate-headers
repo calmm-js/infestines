@@ -1,0 +1,24 @@
+#!/usr/bin/env node
+
+const fs = require('fs').promises
+
+const header = (prefix, title, id) =>
+  `${'#'.repeat(prefix.length / 2 + 2)} <a id="${id}"></a> [≡](#contents) [▶](https://polytypic.github.io/infestines/index.html#${id}) ${title}`
+
+async function doIt() {
+  const file = await fs.readFile('README.md')
+  file
+    .toString()
+    .split('\n')
+    .forEach(line => {
+      let m
+      if (m = /^( *)\* *(\[.*\]\(#(.*)\))/.exec(line)) {
+        console.log(header(m[1], m[2], m[3]))
+      } else
+        if (m = /^( *)\* *(<a href="([^"]*)".*>)/.exec(line)) {
+        console.log(header(m[1], m[2], m[3]))
+      }
+    })
+}
+
+doIt()

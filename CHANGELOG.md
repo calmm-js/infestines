@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.0
+
+Renamed `apply` as `ap` and introduced a new function named `apply`.
+
 ## 0.4.0
 
 Generalized `keys`, `values`, `assocPartialU` and `dissocPartialU` to allow
